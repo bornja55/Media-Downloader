@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MEDIA_CORE_DL - Universal Media Downloader</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-container": "#00285d",
+                    "tertiary-container": "#df7412",
+                    "on-surface-variant": "#c2c6d6",
+                    "outline-variant": "#424754",
+                    "background": "#131313",
+                    "surface-variant": "#353534",
+                    "on-background": "#e5e2e1",
+                    "secondary-fixed-dim": "#b9c8de",
+                    "on-primary-fixed-variant": "#004395",
+                    "primary": "#adc6ff",
+                    "primary-container": "#4d8eff",
+                    "error": "#ffb4ab",
+                    "primary-fixed": "#d8e2ff",
+                    "on-tertiary-fixed": "#311400",
+                    "tertiary-fixed": "#ffdcc6",
+                    "secondary-container": "#39485a",
+                    "on-primary": "#002e6a",
+                    "primary-fixed-dim": "#adc6ff",
+                    "on-tertiary-fixed-variant": "#723600",
+                    "on-primary-fixed": "#001a42",
+                    "surface-container-lowest": "#0e0e0e",
+                    "surface-bright": "#393939",
+                    "secondary": "#b9c8de",
+                    "on-secondary-fixed": "#0d1c2d",
+                    "tertiary-fixed-dim": "#ffb786",
+                    "secondary-fixed": "#d4e4fa",
+                    "on-surface": "#e5e2e1",
+                    "error-container": "#93000a",
+                    "on-tertiary-container": "#461f00",
+                    "surface-container-highest": "#353534",
+                    "on-secondary": "#233143",
+                    "surface-container-high": "#2a2a2a",
+                    "inverse-surface": "#e5e2e1",
+                    "inverse-on-surface": "#313030",
+                    "surface-dim": "#131313",
+                    "on-secondary-fixed-variant": "#39485a",
+                    "inverse-primary": "#005ac2",
+                    "surface": "#131313",
+                    "tertiary": "#ffb786",
+                    "on-tertiary": "#502400",
+                    "on-error": "#690005",
+                    "on-secondary-container": "#a7b6cc",
+                    "on-error-container": "#ffdad6",
+                    "surface-tint": "#adc6ff",
+                    "surface-container-low": "#1c1b1b",
+                    "outline": "#8c909f",
+                    "surface-container": "#201f1f"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "lg": "24px",
+                    "md": "16px",
+                    "gutter": "16px",
+                    "xl": "32px",
+                    "base": "4px",
+                    "xs": "4px",
+                    "margin-desktop": "32px",
+                    "margin-mobile": "16px",
+                    "sm": "8px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Inter", "sans-serif"],
+                    "headline-md": ["Inter", "sans-serif"],
+                    "body-sm": ["Inter", "sans-serif"],
+                    "label-sm": ["Inter", "sans-serif"],
+                    "body-lg": ["Inter", "sans-serif"],
+                    "label-md": ["Inter", "sans-serif"],
+                    "mono": ["JetBrains Mono", "monospace"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "14px", "letterSpacing": "0.03em", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+      body {
+        background-color: #131313;
+        color: #e5e2e1;
+        font-family: 'Inter', sans-serif;
+      }
+      .terminal-glow {
+        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+      }
+      .download-glow {
+        box-shadow: 0 0 15px rgba(173, 198, 255, 0.3);
+      }
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #1c1b1b;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #424754;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #8c909f;
+      }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="bg-surface text-primary font-headline-md text-headline-md docked full-width top-0 border-b border-outline-variant flex justify-between items-center w-full px-gutter h-16 sticky z-50">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="terminal">terminal</span>
+<span class="font-headline-md text-headline-md font-bold tracking-tighter text-primary">MEDIA_CORE_DL</span>
+</div>
+<!-- Desktop Navigation Tabs integrated into AppBar as requested -->
+<nav class="hidden md:flex items-center h-full gap-8">
+<button class="h-full px-2 flex items-center gap-2 text-primary border-b-2 border-primary transition-colors font-label-md text-label-md">
+<span class="material-symbols-outlined" data-icon="movie">movie</span>
+                Video
+            </button>
+<button class="h-full px-2 flex items-center gap-2 text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md">
+<span class="material-symbols-outlined" data-icon="audiotrack">audiotrack</span>
+                Sound
+            </button>
+<button class="h-full px-2 flex items-center gap-2 text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md">
+<span class="material-symbols-outlined" data-icon="picture_as_pdf">picture_as_pdf</span>
+                PDF
+            </button>
+</nav>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-high p-2 rounded-full transition-colors" data-icon="settings">settings</button>
+</div>
+</header>
+<main class="flex-grow flex flex-col p-gutter lg:p-xl max-w-7xl mx-auto w-full gap-lg">
+<!-- Main Two-Column Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-lg h-full lg:min-h-[500px]">
+<!-- Left Column: Source URL Entry -->
+<section class="lg:col-span-8 flex flex-col gap-base h-full">
+<div class="flex items-center justify-between mb-2">
+<h2 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="link">link</span>
+                        Input Queue
+                    </h2>
+<span class="text-label-sm font-label-sm text-on-surface-variant opacity-60">Source URLs (one per line)</span>
+</div>
+<div class="relative flex-grow min-h-[300px] lg:min-h-0 bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden focus-within:border-primary transition-colors group">
+<textarea class="w-full h-full bg-transparent border-none focus:ring-0 text-primary-fixed font-mono p-md resize-none placeholder:text-outline/40 text-body-md" id="urlInput" placeholder="https://example.com/video/123
+https://source.net/media/abc"></textarea>
+<div class="absolute bottom-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="bg-surface-container-high hover:bg-surface-container-highest text-on-surface px-3 py-1.5 rounded-lg text-label-sm flex items-center gap-1 border border-outline-variant">
+<span class="material-symbols-outlined text-[18px]" data-icon="content_paste">content_paste</span>
+                            Paste
+                        </button>
+<button class="bg-surface-container-high hover:bg-surface-container-highest text-on-surface px-3 py-1.5 rounded-lg text-label-sm flex items-center gap-1 border border-outline-variant" onclick="document.getElementById('urlInput').value=''">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete_sweep">delete_sweep</span>
+                            Clear
+                        </button>
+</div>
+</div>
+</section>
+<!-- Right Column: Settings & CTA -->
+<section class="lg:col-span-4 flex flex-col gap-lg h-full">
+<!-- Configuration Card -->
+<div class="bg-surface-container border border-outline-variant p-md rounded-xl flex flex-col gap-md">
+<h3 class="font-label-md text-label-md text-primary uppercase tracking-widest">Extraction Settings</h3>
+<!-- Filename Input -->
+<div class="flex flex-col gap-xs">
+<label class="text-label-sm font-label-sm text-on-surface-variant">Custom Filename (Optional)</label>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary" data-icon="edit_note">edit_note</span>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg pl-10 pr-3 py-2.5 text-body-md focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="media_export_%(title)s" type="text"/>
+</div>
+</div>
+<!-- Browser Dropdown -->
+<div class="flex flex-col gap-xs">
+<label class="text-label-sm font-label-sm text-on-surface-variant">Browser for Cookie Extraction</label>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary" data-icon="cookie">cookie</span>
+<select class="w-full bg-surface-container-low border border-outline-variant rounded-lg pl-10 pr-10 py-2.5 text-body-md focus:border-primary appearance-none cursor-pointer">
+<option value="none">Default (No Cookies)</option>
+<option value="chrome">Google Chrome</option>
+<option value="edge">Microsoft Edge</option>
+<option value="safari">Apple Safari</option>
+<option value="firefox">Mozilla Firefox</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<!-- Additional Options -->
+<div class="flex flex-col gap-sm pt-2">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="w-5 h-5 rounded border-outline-variant bg-surface-container-low text-primary focus:ring-primary" type="checkbox"/>
+<span class="text-body-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Embed Thumbnails</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-5 h-5 rounded border-outline-variant bg-surface-container-low text-primary focus:ring-primary" type="checkbox"/>
+<span class="text-body-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Convert to MP4/MP3</span>
+</label>
+</div>
+</div>
+<!-- CTA Button -->
+<button class="download-glow mt-auto bg-primary-container text-on-primary-container font-bold rounded-xl py-5 px-6 flex items-center justify-center gap-3 active:scale-95 transition-all duration-200 hover:brightness-110" id="downloadBtn">
+<span class="material-symbols-outlined text-[28px]" data-icon="download">download</span>
+<span class="text-headline-md font-headline-md">Download Queue</span>
+</button>
+<!-- Visualization Element (Themed Art) -->
+<div class="relative w-full aspect-video rounded-xl overflow-hidden border border-outline-variant bg-surface-container-lowest">
+
+<div class="absolute inset-0 flex flex-col items-center justify-center p-md text-center">
+<span class="material-symbols-outlined text-[48px] text-primary/40 mb-2" data-icon="cloud_download">cloud_download</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant/50 max-w-[200px]">Waiting for active connection...</p>
+</div>
+</div>
+</section>
+</div>
+<!-- Bottom Section: Status Log -->
+<section class="w-full flex flex-col gap-base">
+<div class="flex items-center justify-between">
+<h3 class="font-label-md text-label-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="history">history</span>
+                    System Status Log
+                </h3>
+<div class="flex gap-4">
+<span class="flex items-center gap-1.5 text-label-sm text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                        Service Online
+                    </span>
+<span class="text-label-sm text-on-surface-variant font-mono">v4.8.2-core</span>
+</div>
+</div>
+<div class="w-full h-48 bg-surface-container-lowest border border-outline-variant rounded-xl p-md font-mono text-body-sm overflow-y-auto terminal-glow flex flex-col gap-1" id="statusLog">
+<div class="flex gap-4 text-on-surface-variant/40">
+<span class="whitespace-nowrap">[14:20:01]</span>
+<span>MEDIA_CORE Kernel successfully initialized. All protocols ready.</span>
+</div>
+<div class="flex gap-4 text-on-surface-variant/40">
+<span class="whitespace-nowrap">[14:20:05]</span>
+<span>Loading FFmpeg binaries... OK</span>
+</div>
+<div class="flex gap-4 text-primary/80">
+<span class="whitespace-nowrap">[14:21:42]</span>
+<span>System idle. Awaiting user input queue.</span>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile only suppression check handled by md:hidden in layout if needed) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center py-2 bg-surface border-t border-outline-variant z-50 shadow-lg">
+<div class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-xl px-4 py-1 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+<span class="font-label-sm text-label-sm">Downloader</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:text-primary active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="folder">folder</span>
+<span class="font-label-sm text-label-sm">Library</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:text-primary active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="code">code</span>
+<span class="font-label-sm text-label-sm">Terminal</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:text-primary active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm">Account</span>
+</div>
+</nav>
+<script>
+        // Micro-interactions for the download log
+        const logElement = document.getElementById('statusLog');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const urlInput = document.getElementById('urlInput');
+
+        function addLogEntry(message, type = 'default') {
+            const now = new Date();
+            const timeStr = `[${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}]`;
+            
+            const entry = document.createElement('div');
+            entry.className = 'flex gap-4 animate-in fade-in slide-in-from-left-2 duration-300';
+            
+            const colorClass = type === 'error' ? 'text-error' : (type === 'success' ? 'text-primary' : 'text-on-surface-variant/70');
+            
+            entry.innerHTML = `
+                <span class="whitespace-nowrap text-on-surface-variant/40">${timeStr}</span>
+                <span class="${colorClass}">${message}</span>
+            `;
+            
+            logElement.appendChild(entry);
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        downloadBtn.addEventListener('click', () => {
+            const urls = urlInput.value.trim().split('\n').filter(u => u.length > 0);
+            
+            if (urls.length === 0) {
+                addLogEntry('Critical: No source URLs detected in queue.', 'error');
+                return;
+            }
+
+            addLogEntry(`Initiating batch download for ${urls.length} target(s)...`);
+            
+            urls.forEach((url, i) => {
+                setTimeout(() => {
+                    addLogEntry(`Attempting handshake with remote host: ${url.substring(0, 30)}...`);
+                }, (i + 1) * 800);
+            });
+        });
+
+        // Add periodic background noise logs for flavor
+        setInterval(() => {
+            if (Math.random() > 0.9) {
+                addLogEntry('HEARTBEAT: Service core operating within normal thermal parameters.', 'default');
+            }
+        }, 15000);
+    </script>
+</body></html>

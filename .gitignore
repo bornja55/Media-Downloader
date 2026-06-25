@@ -1,0 +1,32 @@
+# Cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environments
+venv/
+.venv/
+env/
+.env
+
+# Sensitive / User Data
+cookies.txt
+
+# Logs
+chromedriver.log
+debug.txt
+*.log
+
+# Downloaded Media
+*.mp4
+*.mp3
+*.m4a
+*.webm
+*.pdf
+*.mkv
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+config.json
