@@ -1,21 +1,10 @@
-# Facebook Downloader Context
+# Domain Glossary
 
-Context and domain language for the Facebook Private Group Downloader.
+## Media Engine
+- **Job**: A single download task originating from one URL.
+- **Manga Chapter**: A specific webpage containing a sequence of images representing one chapter of a comic/manga. Represents a single Job in the system.
 
-## Language
+- **CBZ Format**: Comic Book Archive (essentially a renamed .zip file) containing a sequence of images. The standard output format for Manga Chapters.
+- **Auto-Discovery**: A mechanism to detect the URL of the next chapter either by finding a 'Next' UI button or interpolating URL patterns, outputting suggestions to the Terminal.
 
-**Private Group Video**:
-A video posted within a closed or private Facebook Group that requires the user's authenticated session to be viewed.
-_Avoid_: Members-only video, secret video
-
-**Cookie Authentication**:
-The mechanism of extracting existing session cookies from a local web browser to authenticate requests to Facebook.
-_Avoid_: Login, Username/Password authentication
-
-**Flipbook PDF**:
-The final output format of a downloaded HTML5 or AnyFlip document. The script should scrape the individual images and compile them into a single PDF artifact.
-_Avoid_: Folder of images, E-book zip
-
-**Downloader Plugin**:
-An isolated script (like `fb_downloader.py` or `flipbook_downloader.py`) that takes a URL as input and outputs a single media file. The main Flask app routes requests to the correct plugin based on the URL domain.
-_Avoid_: Monolith downloader, hardcoded logic
+- **Generic Image Hunter**: A scraping strategy that simulates user scrolling to trigger lazy-loading, extracting all large <img> tags (e.g. >400px width/height), serving as a universal fallback for typical manga sites.
