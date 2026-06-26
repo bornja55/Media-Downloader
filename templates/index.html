@@ -194,7 +194,7 @@ html:not(.dark) {
                     </h2>
 <span class="text-label-sm font-label-sm text-on-surface-variant opacity-60">Source URLs (one per line)</span>
 </div>
-<div class="relative h-[250px] lg:h-[300px] flex-shrink-0 bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden focus-within:border-primary transition-colors group">
+<div class="relative h-[180px] lg:h-[220px] flex-shrink-0 bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden focus-within:border-primary transition-colors group">
 <textarea class="w-full h-full bg-transparent border-none focus:ring-0 text-primary font-mono p-md resize-none placeholder:text-outline/40 text-body-md" id="urlInput" placeholder="https://example.com/video/123
 https://source.net/media/abc"></textarea>
 <div class="absolute bottom-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -238,7 +238,7 @@ https://source.net/media/abc"></textarea>
         <div id="progressBar" class="h-full bg-primary transition-all duration-300" style="width: 0%"></div>
     </div>
 </div>
-<div class="w-full h-48 lg:flex-grow min-h-[150px] bg-surface-container-lowest border border-outline-variant rounded-xl p-md font-mono text-body-sm overflow-y-auto terminal-glow flex flex-col gap-1" id="statusLog">
+<div class="w-full h-40 lg:flex-grow min-h-[120px] bg-surface-container-lowest border border-outline-variant rounded-xl p-md font-mono text-body-sm overflow-y-auto terminal-glow flex flex-col gap-1" id="statusLog">
 <div class="flex gap-4 text-on-surface-variant/40">
 <span class="whitespace-nowrap">[14:20:01]</span>
 <span>MEDIA_CORE Kernel successfully initialized. All protocols ready.</span>
@@ -268,21 +268,6 @@ https://source.net/media/abc"></textarea>
 <input class="w-full bg-surface-container-low border border-outline-variant rounded-lg pl-10 pr-3 py-2.5 text-body-md focus:border-primary focus:ring-1 focus:ring-primary transition-all text-on-surface" placeholder="media_export_%(title)s" type="text"/>
 </div>
 </div>
-<!-- Browser Dropdown -->
-<div class="flex flex-col gap-xs">
-<label class="text-label-sm font-label-sm text-on-surface-variant">Browser for Cookie Extraction</label>
-<div class="relative group">
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary" data-icon="cookie">cookie</span>
-<select class="w-full bg-surface-container-low border border-outline-variant rounded-lg pl-10 pr-10 py-2.5 text-body-md focus:border-primary appearance-none cursor-pointer text-on-surface">
-<option value="none">Default (No Cookies)</option>
-<option value="chrome">Google Chrome</option>
-<option value="edge">Microsoft Edge</option>
-<option value="safari">Apple Safari</option>
-<option value="firefox">Mozilla Firefox</option>
-</select>
-<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant" data-icon="expand_more">expand_more</span>
-</div>
-</div>
 <!-- Additional Options -->
 <div class="flex flex-col gap-sm pt-2">
 <label class="flex items-center gap-3 cursor-pointer group">
@@ -297,15 +282,21 @@ https://source.net/media/abc"></textarea>
 
 <!-- Custom Cookies Textarea -->
 <div class="flex flex-col gap-xs pt-4 border-t border-outline-variant">
-<label class="text-label-sm font-label-sm text-on-surface-variant">Custom Cookies (Netscape format) [Optional]</label>
-<div class="relative group h-24">
+<label class="text-label-sm font-label-sm text-on-surface-variant flex items-center justify-between">
+    <span>Custom Cookies (Netscape format) [Optional]</span>
+    <a href="https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc" target="_blank" class="text-primary hover:underline flex items-center gap-1 text-[11px] bg-primary/10 px-2 py-0.5 rounded-full">
+        <span class="material-symbols-outlined text-[14px]" data-icon="extension">extension</span> Extension
+    </a>
+</label>
+<div class="relative group h-32">
 <span class="material-symbols-outlined absolute left-3 top-3 text-on-surface-variant group-focus-within:text-primary" data-icon="data_object">data_object</span>
 <textarea id="customCookies" class="w-full h-full bg-surface-container-low border border-outline-variant rounded-lg pl-10 pr-3 py-2.5 text-body-xs font-mono text-on-surface focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-none placeholder:text-outline-variant/60" placeholder="# Netscape HTTP Cookie File..."></textarea>
 </div>
+<p class="text-[11px] text-on-surface-variant/70 mt-1">วางคุกกี้เพื่อดาวน์โหลดคลิปส่วนตัว (Member-only / Private Group)</p>
 </div>
 </div>
 <!-- Downloaded Files List -->
-<div class="relative w-full h-[300px] lg:flex-grow rounded-xl overflow-hidden border border-outline-variant bg-surface-container-lowest flex flex-col">
+<div class="relative w-full h-[200px] lg:flex-grow min-h-[150px] rounded-xl overflow-hidden border border-outline-variant bg-surface-container-lowest flex flex-col">
     <div class="bg-surface-container-high px-4 py-3 border-b border-outline-variant flex items-center gap-2 text-primary font-label-md">
         <span class="material-symbols-outlined text-[20px]" data-icon="folder_special">folder_special</span>
         Successfully Downloaded Files
@@ -415,7 +406,6 @@ https://source.net/media/abc"></textarea>
         const downloadBtn = document.getElementById('downloadBtn');
         const urlInput = document.getElementById('urlInput');
         const customNameInput = document.querySelector('input[placeholder*="media_export"]');
-        const browserSelect = document.querySelector('select');
         const customCookiesInput = document.getElementById('customCookies');
         let logInterval = null;
         let logCount = 0;
@@ -459,7 +449,7 @@ https://source.net/media/abc"></textarea>
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
                     url: urlInput.value, 
-                    browser: browserSelect.value,
+                    browser: 'none',
                     custom_name: customNameInput.value.trim() !== "" ? customNameInput.value.trim() : null,
                     mode: currentMode,
                     custom_cookies: customCookiesInput.value.trim() !== "" ? customCookiesInput.value.trim() : null

@@ -1,4 +1,5 @@
 import os
+import sys
 import threading
 import time
 import uuid
@@ -9,7 +10,13 @@ from flask import Flask, render_template, request, jsonify
 from fb_downloader import download_media
 from pdf_downloader import download_flipbook
 
-app = Flask(__name__)
+# Support for PyInstaller
+if getattr(sys, 'frozen', False):
+    template_folder = os.path.join(sys._MEIPASS, 'templates')
+    static_folder = os.path.join(sys._MEIPASS, 'static')
+    app = Flask(__name__, template_folder=template_folder, static_folder=static_folder)
+else:
+    app = Flask(__name__)
 
 CONFIG_FILE = "config.json"
 DEFAULT_CONFIG = {
@@ -155,4 +162,12 @@ def clear_cookies():
     return jsonify({"status": "success", "message": "No cookies file found."})
 
 if __name__ == "__main__":
-    app.run(port=5000, debug=True)
+    def open_browser():
+        import webbrowser
+        webbrowser.open_new("http://127.0.0.1:5000")
+        
+    # Open the browser after 2 seconds
+    threading.Timer(2.0, open_browser).start()
+    
+    # Run the app (Turn off debug mode for production/PyInstaller to avoid opening two tabs)
+    app.run(port=5000, debug=False)

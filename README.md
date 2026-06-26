@@ -101,17 +101,21 @@
 4. **เริ่มกระบวนการดาวน์โหลด:**
    - เลือกโหมดจากแท็บด้านบน: **Video**, **Sound**, หรือ **PDF**
    - นำลิงก์เป้าหมายมาวางในกล่อง (วางได้หลายบรรทัด)
-   - หากลิงก์นั้นเป็นเนื้อหาที่ต้องล็อกอิน ให้เลือก **"Browser for Cookie Extraction"** ให้ตรงกับเบราว์เซอร์ที่คุณล็อกอินทิ้งไว้
-   - **(ใหม่!) การใช้ Custom Cookies:** หากคุณมีข้อมูล Cookie ดิบ (รูปแบบ Netscape) คุณสามารถนำข้อความมาวางในช่อง **"Custom Cookies"** ได้โดยตรง (ระบบจะให้ความสำคัญกับช่องนี้ก่อนการดึงจาก Browser เสมอ) 
-     *(💡 แนะนำ: คุณสามารถใช้ส่วนขยาย (Extension) เช่น **"Get cookies.txt LOCALLY"** บน Chrome/Edge เพื่อก๊อปปี้ข้อมูลข้อความ Cookie มาวางได้เลย)*
+   - **การใช้ Custom Cookies (จำเป็นสำหรับคลิป Member-Only / Private Group!):** 
+     หากต้องการดาวน์โหลดเนื้อหาที่ต้องล็อกอิน ให้คุณติดตั้งส่วนขยาย (Extension) ที่ชื่อว่า **[Get cookies.txt LOCALLY](https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc)** บน Chrome/Edge จากนั้นเปิดหน้าคลิปที่ดูได้ตามปกติ -> กดที่ Extension เพื่อ Copy ข้อมูลคุกกี้ดิบ (รูปแบบ Netscape) -> แล้วเอามาวางในช่อง **"Custom Cookies"** ในโปรแกรมได้โดยตรง (ระบบจะอิงจากช่องนี้ โหลดผ่าน 100%!)
+     
+     <div align="center">
+       <img src="assets/extension_guide.png" width="400" alt="วิธีใช้งาน Extension Get cookies.txt LOCALLY">
+     </div>
    - กดปุ่ม **Download Queue** แล้วนั่งจิบกาแฟรอได้เลย! ☕
 
 ---
 
-## ⚠️ ข้อควรระวังด้านความปลอดภัย (Security & Privacy)
+## ⚠️ ข้อควรระวังด้านความปลอดภัยและข้อจำกัด (Security & Privacy)
 
 - **Local Execution 100%:** โปรแกรมนี้รันบนเครื่องของคุณเท่านั้น ไม่มีการส่งข้อมูลรหัสผ่านหรือคุกกี้ของคุณไปยังเซิร์ฟเวอร์ภายนอกใดๆ ทั้งสิ้น ข้อมูลเซสชันคุกกี้ถูกอ่านแบบ "ชั่วคราว" เฉพาะตอนที่ต้องสกัดไฟล์เท่านั้น
 - **Headless Chrome:** ระบบสกัด Flipbook จะแอบเปิด Google Chrome ทำงานอยู่เบื้องหลัง (ไม่รบกวนการทำงานหน้าจอ) กรุณาอย่าบังคับปิด Process ของ Chrome ใน Task Manager ขณะรันระบบ
+- **ข้อจำกัดของ Google Chrome (App-Bound Encryption):** เนื่องจากการอัปเดตความปลอดภัยของ Google Chrome การดึงคุกกี้อัตโนมัติอาจล้มเหลว (Error #7271) หากเกิดปัญหานี้ แนะนำให้ใช้ **Firefox** หรือก๊อปปี้โค้ดมาวางในช่อง **Custom Cookies** ด้วย Extension ตามที่ระบุไว้ในคู่มือ
 
 ---
 

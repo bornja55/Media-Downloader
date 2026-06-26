@@ -69,7 +69,7 @@ def download_media(url, browser="chrome", custom_name=None, audio_only=False, lo
         if os.path.exists(cookie_file):
             log_callback(f"[*] Authenticating using cookie file: {cookie_file}...")
             ydl_opts['cookiefile'] = cookie_file
-        elif browser:
+        elif browser and browser.lower() != "none":
             log_callback(f"[*] Authenticating using {browser} cookies...")
             ydl_opts['cookiesfrombrowser'] = (browser, )
 
@@ -102,8 +102,23 @@ def download_media(url, browser="chrome", custom_name=None, audio_only=False, lo
                 log_callback("[*] Using bundled ffmpeg.exe for video/audio merging")
                 ydl_opts['ffmpeg_location'] = ffmpeg_path
 
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            ydl.download([url])
+        try:
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                ydl.download([url])
+        except Exception as e:
+            error_str = str(e)
+            if ("Could not copy Chrome cookie database" in error_str or "Could not copy" in error_str or "database is locked" in error_str):
+                if 'cookiesfrombrowser' in ydl_opts:
+                    log_callback(f"[!] Warning: Could not extract cookies from {browser} (it might be open/locked).")
+                    log_callback("[!] Retrying download WITHOUT cookies (this will only work if the video is public)...")
+                    del ydl_opts['cookiesfrombrowser']
+                    
+                    with yt_dlp.YoutubeDL(ydl_opts) as ydl_retry:
+                        ydl_retry.download([url])
+                else:
+                    raise
+            else:
+                raise
 
         log_callback("[+] Download completed successfully!")
         return True
