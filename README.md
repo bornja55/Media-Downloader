@@ -1,3 +1,5 @@
+*อ่านคู่มือเป็นภาษาอื่น: [🇹🇭 ภาษาไทย](README.md), [🇬🇧 English](README_EN.md)*
+
 # 🚀 MEDIA CORE DL: The Ultimate Universal Downloader & Flipbook Extractor
 
 ![App Preview](https://img.shields.io/badge/UI-TailwindCSS-38B2AC?style=for-the-badge&logo=tailwind-css)
