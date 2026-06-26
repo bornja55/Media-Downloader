@@ -18,11 +18,17 @@ Download videos and audio in the highest available quality (High-Quality Extract
 ### 📚 2. Elite Flipbook Extractor
 Break the limits of e-book websites! Extract locked pages from **FlipHTML5** and **AnyFlip**, automatically compiling them into high-resolution PDFs (100% automated). Files are automatically named after the real book title.
 
-### 🔑 3. Smart Authentication (VIP / Member-Only Bypass)
+### 🖼️ 3. Image & Manga Downloader
+Download entire photo albums or social media posts (e.g., Facebook) in one click, with support for 3 automatic output formats:
+- **Raw Images:** Save individual image files cleanly into a dedicated folder.
+- **CBZ (Comic Book Archive):** Package all images into a `.cbz` file for reading in manga apps.
+- **PDF Document:** Compile all images into a single high-speed PDF file.
+
+### 🔑 4. Smart Authentication (VIP / Member-Only Bypass)
 No more screen recording! With **Cookie Extraction** technology, the system securely borrows session data from your local browser (supports Chrome, Edge, Firefox, Brave, Safari, Opera). 
 This allows you to extract videos directly from **Facebook Private Groups**, **Member-Only clips**, or **online courses** you already have access to, just as if you were clicking download yourself!
 
-### ⚙️ 4. Settings Dashboard & Top Bar
+### ⚙️ 5. Settings Dashboard & Top Bar
 Control everything from the top-right menu of the application:
 - **Dark / Light Mode:** Instantly switch between a cool dark mode and a clean light mode using the ☀️/🌙 icon on the top bar.
 - **Settings Window (⚙️):**
@@ -30,10 +36,10 @@ Control everything from the top-right menu of the application:
 - **One-Click Maintenance:** Buttons to clear operation logs and temporary cookie files for maximum security and privacy.
 - **Netscape Cookie Support:** Manually input custom Netscape cookies on the main page, designed for developers or pro users.
 
-### ⚡ 5. Real-Time Batch Processing UI
+### ⚡ 6. Real-Time Batch Processing UI
 - Paste hundreds of links; the system will handle downloading sequentially (Batch Processing).
 - Futuristic simulated terminal (Hacker-style GUI) that reports real-time status, download percentages, and speed per second.
-- Supports custom file naming via templates (e.g., `media_export_%(title)s`).
+- Supports custom file naming via templates (e.g., `media_export_%(title)s`) or automatic naming by Post ID.
 
 ---
 
@@ -101,12 +107,12 @@ Our program is available as a ready-to-use `.exe` file (One-Click) without needi
    - Toggle **Light Mode ☀️** or **Dark Mode 🌙** to your preference.
 
 4. **Start Downloading:**
-   - Select the mode from the top tab: **Video**, **Sound**, or **PDF**
+   - Select the mode from the top tab: **Video**, **Sound**, **Image**, or **PDF**
    - Paste the target links into the box (supports multiple lines).
-   - **Using Custom Cookies (Required for Member-Only / Private Group clips!):** 
+   - **Using Custom Cookies (Required for Member-Only / Private Group clips & posts!):** 
      To download login-restricted content, install the **[Get cookies.txt LOCALLY](https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc)** extension on Chrome/Edge.
      
-     **🚨 VERY IMPORTANT:** You must **first open and keep the video tab (YouTube, Facebook, etc.) running normally**, then click the Extension icon to copy the raw cookie data (Netscape format).
+     **🚨 VERY IMPORTANT:** You must **first open and keep the video/image tab (YouTube, Facebook, etc.) running normally**, then click the Extension icon to copy the raw cookie data (Netscape format).
      
      Paste this directly into the **"Custom Cookies"** box in the program (The system relies on this box, 100% success rate!)
      
@@ -129,4 +135,6 @@ Our program is available as a ready-to-use `.exe` file (One-Click) without needi
 
 This project is powered by amazing Open-Source technologies and libraries. Special thanks to:
 - **[yt-dlp](https://github.com/yt-dlp/yt-dlp):** The core engine powering the universal video and audio downloader.
+- **[gallery-dl](https://github.com/mikf/gallery-dl):** The top-tier powerful tool for extracting images and manga from social media.
+- **[img2pdf](https://gitlab.mister-muffin.de/josch/img2pdf):** The fastest lossless library for converting images to PDF.
 - **[AnyFlip Downloader (by Lofter1)](https://github.com/Lofter1/anyflip-downloader):** The foundational code and concept for extracting images and merging them into PDFs from Flipbook sites, which was further developed and optimized in this project.

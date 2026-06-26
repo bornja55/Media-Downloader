@@ -1,5 +1,12 @@
-import os
 import sys
+import os
+
+# Subprocess Hook for gallery-dl (PyInstaller Support)
+if "--gdl" in sys.argv:
+    import gallery_dl
+    sys.argv.remove("--gdl")
+    sys.exit(gallery_dl.main())
+
 import threading
 import time
 import uuid
@@ -9,6 +16,7 @@ from flask import Flask, render_template, request, jsonify
 # Import the refactored downloader modules
 from fb_downloader import download_media
 from pdf_downloader import download_flipbook
+from manga_downloader import download_manga
 
 # Support for PyInstaller
 if getattr(sys, 'frozen', False):
@@ -39,7 +47,7 @@ def save_config(config):
 
 tasks = {}
 
-def download_video(task_id, urls_text, browser, custom_name=None, mode="video"):
+def download_video(task_id, urls_text, browser, custom_name=None, mode="video", package_format="raw"):
     urls = [u.strip() for u in urls_text.split('\n') if u.strip()]
     
     def log_cb(msg):
@@ -63,6 +71,13 @@ def download_video(task_id, urls_text, browser, custom_name=None, mode="video"):
                 if out_dir:
                     output_filename = os.path.join(out_dir, output_filename)
                 success = download_flipbook(url, output_filename, log_callback=log_cb)
+            elif mode == "image":
+                out_dir_path = out_dir if out_dir else os.getcwd()
+                # custom_cookies is handled via cookies.txt in root
+                # check if cookies.txt exists
+                has_cookies = os.path.exists("cookies.txt")
+                download_manga(url, log_cb, None, current_name, has_cookies, out_dir_path, package_format)
+                success = True
             else:
                 audio_only = (mode == "sound")
                 
@@ -100,6 +115,7 @@ def api_download():
     custom_name = data.get("custom_name", "")
     mode = data.get("mode", "video")
     custom_cookies = data.get("custom_cookies", "")
+    package_format = data.get("package_format", "raw")
     
     if custom_cookies:
         try:
@@ -111,7 +127,7 @@ def api_download():
     task_id = str(uuid.uuid4())
     tasks[task_id] = {"status": "running", "logs": []}
     
-    thread = threading.Thread(target=download_video, args=(task_id, urls_text, browser, custom_name, mode))
+    thread = threading.Thread(target=download_video, args=(task_id, urls_text, browser, custom_name, mode, package_format))
     thread.start()
     
     return jsonify({"status": "started", "task_id": task_id})

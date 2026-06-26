@@ -1,2 +1,7 @@
 yt-dlp
 flask
+gallery-dl==1.32.4
+flask-socketio
+pywebview
+selenium
+img2pdf
