@@ -102,7 +102,11 @@
    - เลือกโหมดจากแท็บด้านบน: **Video**, **Sound**, หรือ **PDF**
    - นำลิงก์เป้าหมายมาวางในกล่อง (วางได้หลายบรรทัด)
    - **การใช้ Custom Cookies (จำเป็นสำหรับคลิป Member-Only / Private Group!):** 
-     หากต้องการดาวน์โหลดเนื้อหาที่ต้องล็อกอิน ให้คุณติดตั้งส่วนขยาย (Extension) ที่ชื่อว่า **[Get cookies.txt LOCALLY](https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc)** บน Chrome/Edge จากนั้นเปิดหน้าคลิปที่ดูได้ตามปกติ -> กดที่ Extension เพื่อ Copy ข้อมูลคุกกี้ดิบ (รูปแบบ Netscape) -> แล้วเอามาวางในช่อง **"Custom Cookies"** ในโปรแกรมได้โดยตรง (ระบบจะอิงจากช่องนี้ โหลดผ่าน 100%!)
+     หากต้องการดาวน์โหลดเนื้อหาที่ต้องล็อกอิน ให้คุณติดตั้งส่วนขยาย (Extension) ที่ชื่อว่า **[Get cookies.txt LOCALLY](https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc)** บน Chrome/Edge 
+     
+     **🚨 สำคัญมาก:** คุณต้อง **เปิดหน้าแท็บวิดีโอ (YouTube, Facebook ฯลฯ) ที่สามารถดูได้ตามปกติค้างไว้ก่อน** แล้วจึงค่อยกดไอคอน Extension เพื่อ Copy ข้อมูลคุกกี้ดิบ (รูปแบบ Netscape)
+     
+     จากนั้นนำไปวางในช่อง **"Custom Cookies"** ในโปรแกรมได้โดยตรง (ระบบจะอิงจากคุกกี้ช่องนี้ โหลดผ่าน 100%!)
      
      <div align="center">
        <img src="assets/extension_guide.png" width="400" alt="วิธีใช้งาน Extension Get cookies.txt LOCALLY">
