@@ -96,6 +96,12 @@ def download_media(url, browser="chrome", custom_name=None, audio_only=False, lo
             else:
                 ydl_opts['outtmpl'] = '%(title)s.%(ext)s'
 
+        if getattr(sys, 'frozen', False):
+            ffmpeg_path = os.path.join(sys._MEIPASS, 'ffmpeg.exe')
+            if os.path.exists(ffmpeg_path):
+                log_callback("[*] Using bundled ffmpeg.exe for video/audio merging")
+                ydl_opts['ffmpeg_location'] = ffmpeg_path
+
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url])
 
