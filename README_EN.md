@@ -10,6 +10,14 @@ A premium all-in-one web application (Web GUI) for downloading all types of medi
 
 ---
 
+## 🆕 What's New in Version 6.1 (Bug Fixes & Stability)
+- **Manga PDF Data Loss Fix**: Fixed an issue where images were silently deleted if PDF conversion failed. The system now safely falls back to creating a `.cbz` archive instead.
+- **Cookie Race Condition Fix**: Added support for concurrent downloads with different custom cookies by utilizing isolated temporary cookie files per task.
+- **RPA Smart Detection**: Improved the "end-of-book" detection in RPA mode to use Root Mean Square (RMS) instead of exact pixel matching, preventing infinite loops caused by minor web animations.
+- **RPA Crash Protection**: Added a fallback mechanism to prevent thread crashes when users input invalid Output Directories in the Settings.
+
+---
+
 ## 🔥 Key Features
 
 ### 🎥 1. Universal Media Engine
