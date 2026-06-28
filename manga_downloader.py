@@ -96,37 +96,19 @@ def download_manga(url, log_callback, update_progress, custom_name, has_cookies,
             if is_pdf or is_cbz:
                 log_callback(f"[*] Download complete. Compiling into {'.pdf' if is_pdf else '.cbz'}...")
                 try:
-                    images = []
-                    for root, _, files in os.walk(exact_dir):
-                        for f in files:
-                            if f.lower().endswith(('.png', '.jpg', '.jpeg', '.bmp', '.gif', '.webp')):
-                                images.append(os.path.join(root, f))
+                    from core.archiver import ArchiveAdapter
                     
-                    images.sort()
-                    
-                    if images:
-                        if is_pdf:
-                            try:
-                                import img2pdf
-                                pdf_path = os.path.join(output_dir, f"{base_name}.pdf")
-                                with open(pdf_path, "wb") as f:
-                                    f.write(img2pdf.convert(images))
-                                log_callback(f"[SUCCESS] Saved to: {pdf_path}")
-                            except ImportError:
-                                log_callback("[ERROR] Required library (img2pdf) is missing. Cannot convert to PDF. Falling back to .cbz...")
-                                is_cbz = True
+                    if is_pdf:
+                        pdf_path = os.path.join(output_dir, f"{base_name}.pdf")
+                        success = ArchiveAdapter.pack_to_pdf(exact_dir, pdf_path, log_callback)
+                        if not success:
+                            log_callback("[*] Falling back to .cbz...")
+                            is_cbz = True
+                            
+                    if is_cbz:
+                        cbz_path = os.path.join(output_dir, f"{base_name}.cbz")
+                        ArchiveAdapter.pack_to_cbz(exact_dir, cbz_path, log_callback)
                         
-                        if is_cbz:
-                            cbz_path = os.path.join(output_dir, f"{base_name}.cbz")
-                            with zipfile.ZipFile(cbz_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
-                                for idx, img_path in enumerate(images):
-                                    # Add to zip with a clean ordered name
-                                    ext = os.path.splitext(img_path)[1]
-                                    arcname = f"page_{idx+1:03d}{ext}"
-                                    zipf.write(img_path, arcname)
-                            log_callback(f"[SUCCESS] Saved to: {cbz_path}")
-                    else:
-                        log_callback("[ERROR] No valid images found to compile.")
                 except Exception as e:
                     log_callback(f"[ERROR] Failed to create package: {str(e)}")
                 finally:

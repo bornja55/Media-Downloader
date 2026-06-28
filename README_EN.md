@@ -55,6 +55,9 @@ Control everything from the top-right menu of the application:
 - **Human-like Interaction:** Avoid being detected as a bot! The system simulates deep-level mouse and keyboard inputs that act exactly like a real person clicking. This allows you to smoothly bypass anti-bot protections in various apps.
 - **Safe & Ban-Free:** Rest easy knowing your accounts won't get suspended. The process runs completely independently (like setting up a physical camera to record a monitor), meaning the source app cannot detect it.
 
+> 💡 **Why use a Virtual Machine (VM) ?**
+> The RPA (Robotic Process Automation) system needs to take control of your mouse and keyboard to physically turn the book pages. If you run this on your main computer, you won't be able to use it for anything else until the bot finishes. **We highly recommend running this feature inside a Virtual Machine (such as VMware or VirtualBox)** so the bot can hijack the mouse and screen inside the VM window, while you minimize it and continue using your main computer normally!
+
 ---
 
 ## 💿 Standalone Executable (Portable)

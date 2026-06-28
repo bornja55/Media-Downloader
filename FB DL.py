@@ -49,7 +49,12 @@ def save_config(config):
 
 tasks = {}
 
+from core.jobs import JobFactory
+
 def download_video(task_id, urls_text, browser, custom_name=None, mode="video", package_format="raw", cookie_file=None):
+    """
+    Main background thread that parses URLs and dispatches them as DownloadJobs.
+    """
     try:
         urls = [u.strip() for u in urls_text.split('\n') if u.strip()]
         
@@ -57,8 +62,6 @@ def download_video(task_id, urls_text, browser, custom_name=None, mode="video", 
             tasks[task_id]["logs"].append(msg)
 
         for i, url in enumerate(urls):
-            log_cb(f"[*] Processing ({i+1}/{len(urls)}) in {mode.upper()} mode: {url}")
-            
             current_name = custom_name
             if custom_name and len(urls) > 1:
                 current_name = f"{custom_name}_{i+1}"
@@ -69,29 +72,21 @@ def download_video(task_id, urls_text, browser, custom_name=None, mode="video", 
                 config = load_config()
                 out_dir = config.get("output_dir", "").strip()
                 
-                if mode == "pdf":
-                    output_filename = f"{current_name}.pdf" if current_name else f"flipbook_{int(time.time())}.pdf"
-                    if out_dir:
-                        output_filename = os.path.join(out_dir, output_filename)
-                    success = download_flipbook(url, output_filename, log_callback=log_cb, cookie_file=cookie_file)
-                elif mode == "image":
-                    out_dir_path = out_dir if out_dir else os.getcwd()
-                    has_cookies = cookie_file is not None and os.path.exists(cookie_file)
-                    download_manga(url, log_cb, None, current_name, has_cookies, out_dir_path, package_format, cookie_file=cookie_file)
-                    success = True
-                else:
-                    audio_only = (mode == "sound")
-                    
-                    # Apply output directory for yt-dlp by formatting custom_name with absolute path
-                    final_custom_name = current_name
-                    if out_dir:
-                        if not final_custom_name:
-                            final_custom_name = f"{out_dir}/%(title)s"
-                        else:
-                            final_custom_name = os.path.join(out_dir, final_custom_name)
-
-                    success = download_media(url, browser=browser, custom_name=final_custom_name, audio_only=audio_only, log_callback=log_cb, cookie_file=cookie_file)
-                    
+                # Use JobFactory to create the appropriate strategy for this mode
+                job = JobFactory.create_job(
+                    task_id=task_id,
+                    url=url,
+                    mode=mode,
+                    custom_name=current_name,
+                    cookie_file=cookie_file,
+                    log_callback=log_cb,
+                    package_format=package_format,
+                    browser=browser
+                )
+                
+                # Execute the job
+                success = job.execute(out_dir)
+                
                 if not success:
                     log_cb(f"[ERROR] Failed to download: {url}")
             except Exception as e:
