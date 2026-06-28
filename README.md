@@ -165,3 +165,6 @@
 - **[gallery-dl](https://github.com/mikf/gallery-dl):** เครื่องมือทรงพลังระดับแนวหน้าสำหรับการดาวน์โหลดรูปภาพและมังงะจากโซเชียลมีเดีย
 - **[img2pdf](https://gitlab.mister-muffin.de/josch/img2pdf):** ไลบรารีแปลงรูปภาพเป็น PDF แบบไม่สูญเสียความละเอียด (Lossless) ที่เร็วที่สุด
 - **[AnyFlip Downloader (by Lofter1)](https://github.com/Lofter1/anyflip-downloader):** โค้ดต้นแบบและแนวคิดตั้งต้นสำหรับการสกัดรูปภาพและรวมเป็น PDF จากเว็บไซต์ Flipbook ที่ถูกนำมาพัฒนาต่อยอดและยกระดับประสิทธิภาพในโปรเจกต์นี้
+- **[mss](https://python-mss.readthedocs.io/):** ไลบรารีแคปเจอร์หน้าจอความเร็วสูง (Ultra-fast Screen Capture) หัวใจหลักของระบบดึงภาพหน้าจอทะลุกำแพง DRM
+- **[Pillow (PIL)](https://python-pillow.org/):** ขุมพลังเบื้องหลังระบบวิเคราะห์ความต่างของรูปภาพ (Image Analysis) ที่ช่วยให้บอทอ่านหนังสือของเราฉลาดและรู้ว่าหน้าไหนซ้ำ
+- **[PyAutoGUI](https://pyautogui.readthedocs.io/) & [pydirectinput](https://github.com/learncodebygaming/pydirectinput):** เครื่องมือจำลองการคลิกและการกดปุ่มระดับ Hardware-level ที่ทำให้การหลบหลีกระบบป้องกันบอท (Anti-Bot) เป็นไปได้อย่างแนบเนียน

@@ -163,3 +163,6 @@ This project is powered by amazing Open-Source technologies and libraries. Speci
 - **[gallery-dl](https://github.com/mikf/gallery-dl):** The top-tier powerful tool for extracting images and manga from social media.
 - **[img2pdf](https://gitlab.mister-muffin.de/josch/img2pdf):** The fastest lossless library for converting images to PDF.
 - **[AnyFlip Downloader (by Lofter1)](https://github.com/Lofter1/anyflip-downloader):** The foundational code and concept for extracting images and merging them into PDFs from Flipbook sites, which was further developed and optimized in this project.
+- **[mss](https://python-mss.readthedocs.io/):** The ultra-fast screen capture library that forms the backbone of our DRM-busting image extraction system.
+- **[Pillow (PIL)](https://python-pillow.org/):** The powerhouse behind our Image Analysis (RMS Difference) engine, allowing our bot to intelligently detect duplicate pages and book completion.
+- **[PyAutoGUI](https://pyautogui.readthedocs.io/) & [pydirectinput](https://github.com/learncodebygaming/pydirectinput):** The hardware-level input simulation tools that make bypassing Anti-Bot detection mechanisms seamless and invisible.
