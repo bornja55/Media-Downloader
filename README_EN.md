@@ -8,7 +8,8 @@
 
 A premium all-in-one web application (Web GUI) for downloading all types of media, including videos, audio, or access-restricted Flipbooks. Equipped with a smart system that seamlessly bypasses member-only restrictions!
 
----
+## 🆕 What's New in Version 6.1.1 (Hotfix)
+- **Cookie Junk Cleanup**: Fixed an issue where temporary cookie files (`cookies_*.txt`) could be left behind in the application folder if the program was unexpectedly closed.
 
 ## 🆕 What's New in Version 6.1 (Bug Fixes & Stability)
 - **Automatic Image Backup**: Never lose your downloaded images again! If your PC doesn't support creating PDF files, the system will now automatically pack all your images into a comic book format (.cbz) so you always get a complete file.
