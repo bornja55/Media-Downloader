@@ -49,10 +49,10 @@ Control everything from the top-right menu of the application:
 - Futuristic simulated terminal (Hacker-style GUI) that reports real-time status, download percentages, and speed per second.
 - Supports custom file naming via templates (e.g., `media_export_%(title)s`) or automatic naming by Post ID.
 
-### 🤖 7. Enterprise-Grade DRM Analog Hole Bypass (RPA)
-- **OS-Level Restrictions Mitigation:** Overcomes deeply embedded anti-screen capture technologies (e.g., `SetWindowDisplayAffinity`) utilized by enterprise applications and top-tier e-book readers. By implementing a **Virtual Machine (VM) Integration** architecture, media can be extracted flawlessly without compromising or interacting with the target application's source code.
-- **Hardware-Level Robotic Process Automation:** Mitigates Anti-Bot Detection mechanisms via `pydirectinput`, simulating direct hardware input signals (DirectX Scan Codes) into the VM. This mimics genuine human interaction (mouse clicks and keystrokes), ensuring business continuity for data extraction even in maximally restricted environments.
-- **Zero-Footprint Operation:** Eliminates the risk of account bans or privilege suspension. The entire extraction pipeline operates on a 'Black-Box' approach, completely decoupling the host system from the active session.
+### 🤖 7. Smart Screen Capture Bypass (RPA)
+- **Record Even with Black Screens:** No more black screen issues when capturing certain apps or e-books. Our system is designed to work with a Virtual Machine to seamlessly extract clear images, even when the source app tries to block screen recording.
+- **Human-like Interaction:** Avoid being detected as a bot! The system simulates deep-level mouse and keyboard inputs that act exactly like a real person clicking. This allows you to smoothly bypass anti-bot protections in various apps.
+- **Safe & Ban-Free:** Rest easy knowing your accounts won't get suspended. The process runs completely independently (like setting up a physical camera to record a monitor), meaning the source app cannot detect it.
 
 ---
 
