@@ -130,11 +130,12 @@ Our program is available as a ready-to-use `.exe` file (One-Click) without needi
 
 ## 📁 File Storage & Default Output
 
-By default, the downloaded files are saved in the folders located **in the same directory as the program** (unless you manually change the path in Settings):
+By default, if you do not specify a folder in Settings, **all downloaded files (Videos, Audio, Images, and PDFs)** will be saved directly into the **"current program directory"**.
 
-- 📁 **`media_output/`** : Used for saving downloaded **Videos, Audio, and Images (Manga)**.
-- 📁 **`rpa_output/`** : Used for saving extracted **PDFs or Book Pages** from Flipbook sites (PDF Mode).
-- 📁 **`dist/`** : (For developers running source code) This folder stores the compiled `.exe` files ready for use.
+- 📂 **Current Directory:** Used for saving all downloaded media.
+- 📁 **`dist/`** : (For developers) This folder stores the compiled `.exe` files ready for use.
+
+*(💡 **Tip:** If you prefer to keep downloaded files separate from the program files, open the **Settings ⚙️** menu and click 🔍 to select a dedicated folder (e.g., `C:\Downloads\Media`). The program will route all downloads there instead.)*
 
 ---
 
