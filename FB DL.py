@@ -11,12 +11,14 @@ import threading
 import time
 import uuid
 import json
+import subprocess
 from flask import Flask, render_template, request, jsonify
 
 # Import the refactored downloader modules
 from fb_downloader import download_media
 from pdf_downloader import download_flipbook
 from manga_downloader import download_manga
+from rpa_downloader import get_monitors, capture_mouse_position, capture_screen_base64, start_rpa_task
 
 # Support for PyInstaller
 if getattr(sys, 'frozen', False):
@@ -176,6 +178,97 @@ def clear_cookies():
         except Exception as e:
             return jsonify({"status": "error", "message": str(e)}), 500
     return jsonify({"status": "success", "message": "No cookies file found."})
+
+@app.route("/api/rpa/monitors")
+def api_rpa_monitors():
+    try:
+        monitors = get_monitors()
+        return jsonify({"status": "success", "monitors": monitors})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route("/api/rpa/capture_mouse", methods=["POST"])
+def api_rpa_capture_mouse():
+    try:
+        pos = capture_mouse_position()
+        return jsonify({"status": "success", "position": pos})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route("/api/rpa/preview", methods=["POST"])
+def api_rpa_preview():
+    try:
+        data = request.json or {}
+        monitor_id = data.get("monitor_id", 1)
+        crop_box = data.get("crop_box")
+        img_b64 = capture_screen_base64(monitor_id=monitor_id, crop_box=crop_box)
+        return jsonify({"status": "success", "image": img_b64})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route("/api/rpa/launch_browser", methods=["POST"])
+def api_rpa_launch_browser():
+    try:
+        import os, tempfile, shutil
+        temp_dir = os.path.join(tempfile.gettempdir(), "rpa_browser_profile")
+        
+        browser_path = shutil.which("chrome") or shutil.which("google-chrome")
+        if not browser_path:
+            # Check common Windows paths for Chrome and Edge
+            paths = [
+                r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+                r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
+                r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
+            ]
+            for p in paths:
+                if os.path.exists(p):
+                    browser_path = p
+                    break
+                    
+        if browser_path:
+            # Use --user-data-dir to force a completely new process that isn't attached to an already running, hardware-accelerated browser
+            cmd = [browser_path, "--disable-gpu", "--disable-software-rasterizer", f"--user-data-dir={temp_dir}", "https://www.mebmarket.com"]
+            subprocess.Popen(cmd)
+            return jsonify({"status": "success", "message": f"Launched {os.path.basename(browser_path)} in Bypass Mode"})
+        else:
+            # Fallback
+            subprocess.Popen(f'start msedge --disable-gpu --user-data-dir="{temp_dir}" "https://www.mebmarket.com"', shell=True)
+            return jsonify({"status": "success", "message": "Attempted to launch Edge via shell"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+def rpa_task_wrapper(task_id, config):
+    def progress_cb(msg):
+        tasks[task_id]["logs"].append(msg)
+    def check_cancel():
+        return tasks[task_id].get("cancel", False)
+        
+    try:
+        result = start_rpa_task(config, progress_callback=progress_cb, check_cancel=check_cancel)
+        if result.get("status") == "success":
+            progress_cb(f"[SUCCESS] RPA finished. Saved {result.get('pages')} pages to {result.get('file')}")
+        else:
+            progress_cb(f"[ERROR] RPA Error: {result.get('message')}")
+    except Exception as e:
+        progress_cb(f"[ERROR] RPA Exception: {e}")
+    finally:
+        tasks[task_id]["status"] = "finished"
+
+@app.route("/api/rpa/start", methods=["POST"])
+def api_rpa_start():
+    config = request.json or {}
+    task_id = str(uuid.uuid4())
+    tasks[task_id] = {"status": "running", "logs": []}
+    
+    global_config = load_config()
+    out_dir = global_config.get("output_dir", "").strip()
+    if out_dir:
+        config["output_dir"] = out_dir
+        
+    thread = threading.Thread(target=rpa_task_wrapper, args=(task_id, config))
+    thread.start()
+    
+    return jsonify({"status": "started", "task_id": task_id})
 
 if __name__ == "__main__":
     def open_browser():

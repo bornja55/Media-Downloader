@@ -5,3 +5,7 @@ flask-socketio
 pywebview
 selenium
 img2pdf
+mss
+pyautogui
+pillow
+numpy

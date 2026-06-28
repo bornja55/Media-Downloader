@@ -178,6 +178,10 @@ html:not(.dark) {
 <span class="material-symbols-outlined" data-icon="image">image</span>
                 Image
             </button>
+<button id="tab-rpa" class="h-full px-2 flex items-center gap-2 text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md">
+<span class="material-symbols-outlined" data-icon="smart_toy">smart_toy</span>
+                Macro
+            </button>
 </nav>
 <div class="flex items-center gap-2">
     <button id="themeToggleBtn" class="text-on-surface-variant hover:bg-surface-container-high p-2 rounded-full transition-colors flex items-center justify-center" title="Toggle Light/Dark Mode">
@@ -191,6 +195,9 @@ html:not(.dark) {
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-lg h-full lg:min-h-[500px]">
 <!-- Left Column: Source URL Entry -->
 <section class="lg:col-span-8 flex flex-col gap-base h-full">
+
+<!-- STANDARD DOWNLOAD SECTION -->
+<div id="standardDownloadSection" class="flex flex-col gap-base">
 <div class="flex items-center justify-between mb-2">
 <h2 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2">
 <span class="material-symbols-outlined text-primary" data-icon="link">link</span>
@@ -228,6 +235,111 @@ https://source.net/media/abc"></textarea>
 <span class="material-symbols-outlined text-[28px]" data-icon="download">download</span>
 <span class="text-headline-md font-headline-md">Download Queue</span>
 </button>
+</div>
+
+<!-- RPA MACRO SECTION -->
+<div id="rpaSection" class="hidden flex-col gap-4">
+    <div class="bg-surface-container border border-outline-variant rounded-xl p-4 flex flex-col gap-4">
+        <h3 class="font-headline-sm text-primary flex items-center gap-2">
+            <span class="material-symbols-outlined">smart_toy</span> Universal Screen Macro
+        </h3>
+        
+        <!-- Monitor & Trigger -->
+        <div class="grid grid-cols-2 gap-4">
+            <div class="flex flex-col gap-1">
+                <label class="text-label-sm text-on-surface-variant">Target Monitor</label>
+                <div class="flex gap-2">
+                    <select id="rpaMonitor" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2 text-body-md text-on-surface"></select>
+                    <button id="btnRefreshMonitors" class="bg-surface-container-high p-2 rounded-lg border border-outline-variant hover:bg-surface-container-highest transition"><span class="material-symbols-outlined text-[20px]">refresh</span></button>
+                </div>
+            </div>
+            <!-- Trigger Config -->
+            <div class="flex flex-col gap-1">
+                <label class="text-label-sm text-on-surface-variant">Page Turn Trigger</label>
+                <select id="triggerType" class="bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2 text-body-md text-on-surface">
+                    <option value="right">Right Arrow (▶)</option>
+                    <option value="left">Left Arrow (◀)</option>
+                    <option value="pagedown">Page Down</option>
+                    <option value="space">Spacebar</option>
+                    <option value="click">Mouse Click</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Mouse Click Config -->
+        <div id="rpaClickConfig" class="hidden flex-col gap-2 p-3 bg-surface-container-low rounded-lg border border-outline-variant">
+            <label class="text-label-sm text-on-surface-variant flex justify-between">
+                <span>Click Coordinate (X, Y)</span>
+                <span id="clickCoordLabel" class="font-mono text-primary">Not set</span>
+            </label>
+            <button id="btnCaptureClick" class="bg-primary/20 hover:bg-primary/30 text-primary border border-primary/30 py-2 rounded-lg text-label-md flex justify-center items-center gap-2 transition">
+                <span class="material-symbols-outlined">ads_click</span> Lock Click Target (5s Delay)
+            </button>
+        </div>
+
+        <!-- DRM Bypass Helper -->
+        <div class="flex flex-col gap-2 p-3 bg-surface-container-highest border border-primary/30 rounded-lg relative overflow-hidden">
+            <div class="absolute inset-0 bg-primary/5 pointer-events-none"></div>
+            <label class="text-label-md font-bold text-primary flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">vpn_key</span> DRM Bypass (แก้ปัญหาจอดำ)
+            </label>
+            <p class="text-body-sm text-on-surface-variant leading-tight">หากหน้าพรีวิวเป็นสีดำ ให้กดปุ่มนี้เพื่อเปิด Browser ในโหมดพิเศษ แล้วเข้าไปอ่านหนังสือบนเว็บแทนแอป</p>
+            <button id="btnLaunchBrowser" class="mt-1 bg-primary text-on-primary font-bold py-2 rounded-lg flex justify-center items-center gap-2 hover:brightness-110 transition shadow-lg shadow-primary/20">
+                <span class="material-symbols-outlined">public</span> Launch DRM-Bypass Browser
+            </button>
+        </div>
+
+        <!-- Bounding Box Config -->
+        <div class="flex flex-col gap-2 p-3 bg-surface-container-low rounded-lg border border-outline-variant relative">
+            <label class="text-label-sm text-on-surface-variant flex justify-between items-center">
+                <span>Capture Area (Bounding Box)</span>
+                <div class="flex gap-2 font-mono text-primary text-[11px]" id="bboxLabels">
+                    <span id="bboxTL">TL: Not set</span> | <span id="bboxBR">BR: Not set</span>
+                </div>
+            </label>
+            <div class="grid grid-cols-2 gap-2">
+                <button id="btnCaptureTL" class="bg-surface-container-highest hover:bg-outline-variant border border-outline-variant py-2 rounded-lg text-label-md text-on-surface transition">
+                    Lock Top-Left (5s)
+                </button>
+                <button id="btnCaptureBR" class="bg-surface-container-highest hover:bg-outline-variant border border-outline-variant py-2 rounded-lg text-label-md text-on-surface transition">
+                    Lock Bottom-Right (5s)
+                </button>
+            </div>
+            <button id="btnRpaPreview" class="mt-2 bg-secondary-container text-on-secondary-container py-2 rounded-lg font-bold flex justify-center items-center gap-2 hover:brightness-110 transition">
+                <span class="material-symbols-outlined">preview</span> Preview Crop Area
+            </button>
+            
+            <!-- Preview Image Display -->
+            <div id="rpaPreviewBox" class="hidden mt-2 border border-outline-variant rounded-lg overflow-hidden bg-surface-container-lowest flex justify-center items-center min-h-[100px] max-h-[250px]">
+                <img id="rpaPreviewImg" src="" class="max-w-full max-h-[250px] object-contain">
+            </div>
+        </div>
+
+        <!-- Timing & Output -->
+        <div class="grid grid-cols-3 gap-4">
+            <div class="flex flex-col gap-1">
+                <label class="text-label-sm text-on-surface-variant">Total Pages</label>
+                <input id="rpaMaxPages" type="number" value="200" class="bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2 text-body-md text-on-surface">
+            </div>
+            <div class="flex flex-col gap-1">
+                <label class="text-label-sm text-on-surface-variant">Delay (sec)</label>
+                <input id="rpaDelay" type="number" step="0.1" value="1.5" class="bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2 text-body-md text-on-surface">
+            </div>
+            <div class="flex flex-col gap-1">
+                <label class="text-label-sm text-on-surface-variant">Output</label>
+                <select id="rpaFormat" class="bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2 text-body-md text-on-surface">
+                    <option value="cbz">CBZ</option>
+                    <option value="pdf">PDF</option>
+                </select>
+            </div>
+        </div>
+
+        <button id="btnStartRpa" class="download-glow mt-2 bg-tertiary-container text-on-tertiary-container font-bold rounded-xl py-4 px-6 flex items-center justify-center gap-3 active:scale-95 transition-all duration-200 hover:brightness-110">
+            <span class="material-symbols-outlined text-[28px]">play_circle</span>
+            <span class="text-headline-sm font-headline-sm">Start Auto-Capture</span>
+        </button>
+    </div>
+</div>
 
 <!-- Bottom Section: Status Log -->
 <section class="w-full flex flex-col gap-base mt-2 flex-grow">
@@ -405,7 +517,7 @@ https://source.net/media/abc"></textarea>
         
         function switchTab(mode) {
             currentMode = mode;
-            for (const [key, el] of Object.entries(tabs)) {
+            for (const [key, el] of Object.entries({...tabs, "rpa": document.getElementById('tab-rpa')})) {
                 if (key === mode) {
                     el.className = "h-full px-2 flex items-center gap-2 text-primary border-b-2 border-primary transition-colors font-label-md text-label-md";
                 } else {
@@ -413,12 +525,24 @@ https://source.net/media/abc"></textarea>
                 }
             }
             
-            // Show/Hide Image specific options
+            // Show/Hide Sections
+            const stdSection = document.getElementById('standardDownloadSection');
+            const rpaSection = document.getElementById('rpaSection');
             const imageOptions = document.getElementById('imageOptions');
-            if(mode === 'image') {
-                imageOptions.classList.remove('hidden');
-            } else {
+            
+            if (mode === 'rpa') {
+                stdSection.classList.add('hidden');
+                rpaSection.classList.remove('hidden');
                 imageOptions.classList.add('hidden');
+                refreshMonitors();
+            } else {
+                stdSection.classList.remove('hidden');
+                rpaSection.classList.add('hidden');
+                if(mode === 'image') {
+                    imageOptions.classList.remove('hidden');
+                } else {
+                    imageOptions.classList.add('hidden');
+                }
             }
         }
 
@@ -426,6 +550,7 @@ https://source.net/media/abc"></textarea>
         tabs.sound.addEventListener("click", () => switchTab("sound"));
         tabs.pdf.addEventListener("click", () => switchTab("pdf"));
         tabs.image.addEventListener("click", () => switchTab("image"));
+        document.getElementById('tab-rpa').addEventListener("click", () => switchTab("rpa"));
 
         const logContainer = document.getElementById('statusLog');
         const downloadBtn = document.getElementById('downloadBtn');
@@ -681,6 +806,247 @@ https://source.net/media/abc"></textarea>
             logContainer.innerHTML = '';
             addLog('[System] Logs cleared.', 'success');
         }
+
+        // --- RPA Macro Logic ---
+        const rpaMonitor = document.getElementById('rpaMonitor');
+        const btnRefreshMonitors = document.getElementById('btnRefreshMonitors');
+        const rpaTrigger = document.getElementById('triggerType');
+        const rpaClickConfig = document.getElementById('rpaClickConfig');
+        const btnCaptureClick = document.getElementById('btnCaptureClick');
+        const clickCoordLabel = document.getElementById('clickCoordLabel');
+        const btnCaptureTL = document.getElementById('btnCaptureTL');
+        const btnCaptureBR = document.getElementById('btnCaptureBR');
+        const bboxTL = document.getElementById('bboxTL');
+        const bboxBR = document.getElementById('bboxBR');
+        const btnRpaPreview = document.getElementById('btnRpaPreview');
+        const rpaPreviewBox = document.getElementById('rpaPreviewBox');
+        const rpaPreviewImg = document.getElementById('rpaPreviewImg');
+        const btnStartRpa = document.getElementById('btnStartRpa');
+        const btnLaunchBrowser = document.getElementById('btnLaunchBrowser');
+
+        let rpaConfig = {
+            clickPos: null,
+            tl: null,
+            br: null
+        };
+
+        function refreshMonitors() {
+            fetch('/api/rpa/monitors')
+                .then(r => r.json())
+                .then(data => {
+                    if(data.status === 'success') {
+                        rpaMonitor.innerHTML = '';
+                        data.monitors.forEach(m => {
+                            const opt = document.createElement('option');
+                            opt.value = m.id;
+                            opt.innerText = `${m.name} (${m.width}x${m.height})`;
+                            rpaMonitor.appendChild(opt);
+                        });
+                        // Automatically show preview of the first monitor
+                        if(data.monitors.length > 0) {
+                            previewFullMonitor();
+                        }
+                    }
+                });
+        }
+        btnRefreshMonitors.addEventListener('click', refreshMonitors);
+
+        // When user changes monitor, show its full preview so they know which one it is
+        rpaMonitor.addEventListener('change', previewFullMonitor);
+
+        function previewFullMonitor() {
+            fetch('/api/rpa/preview', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    monitor_id: rpaMonitor.value,
+                    crop_box: null // Null means full monitor
+                })
+            }).then(r => r.json()).then(data => {
+                if(data.status === 'success') {
+                    rpaPreviewImg.src = `data:image/jpeg;base64,${data.image}`;
+                    rpaPreviewBox.classList.remove('hidden');
+                }
+            });
+        }
+
+        rpaTrigger.addEventListener('change', (e) => {
+            if(e.target.value === 'click') {
+                rpaClickConfig.classList.remove('hidden');
+                rpaClickConfig.classList.add('flex');
+            } else {
+                rpaClickConfig.classList.add('hidden');
+                rpaClickConfig.classList.remove('flex');
+            }
+        });
+
+        function startCaptureCountdown(btn, originalText, callback) {
+            btn.disabled = true;
+            let count = 5;
+            btn.innerText = `หน่วงเวลา ${count}s... เอาเมาส์ไปชี้เลย!`;
+            btn.classList.add('animate-pulse');
+            
+            const iv = setInterval(() => {
+                count--;
+                if(count > 0) {
+                    btn.innerText = `หน่วงเวลา ${count}s... เอาเมาส์ไปชี้เลย!`;
+                } else {
+                    clearInterval(iv);
+                    btn.innerText = 'Capturing...';
+                    fetch('/api/rpa/capture_mouse', {method: 'POST'})
+                        .then(r => r.json())
+                        .then(data => {
+                            btn.disabled = false;
+                            btn.classList.remove('animate-pulse');
+                            btn.innerText = originalText;
+                            if(data.status === 'success') {
+                                callback(data.position);
+                            }
+                        });
+                }
+            }, 1000);
+        }
+
+        btnCaptureClick.addEventListener('click', () => {
+            alert('คำแนะนำ: หลังจากกด OK โปรแกรมจะนับถอยหลัง 5 วินาที ให้คุณเลื่อนเมาส์ไปชี้ตรง "ปุ่มเปลี่ยนหน้า" ค้างไว้จนกว่าจะแคปพิกัดสำเร็จครับ');
+            startCaptureCountdown(btnCaptureClick, 'Lock Click Target (5s Delay)', (pos) => {
+                rpaConfig.clickPos = pos;
+                clickCoordLabel.innerText = `${pos.x}, ${pos.y}`;
+            });
+        });
+
+        btnCaptureTL.addEventListener('click', () => {
+            alert('คำแนะนำ: ให้เลื่อนเมาส์ไปชี้ที่ "มุมซ้ายบน" ของหน้าหนังสือ ค้างไว้จนครบ 5 วินาทีครับ');
+            startCaptureCountdown(btnCaptureTL, 'Lock Top-Left (5s)', (pos) => {
+                rpaConfig.tl = pos;
+                bboxTL.innerText = `TL: ${pos.x}, ${pos.y}`;
+            });
+        });
+
+        btnCaptureBR.addEventListener('click', () => {
+            alert('คำแนะนำ: ให้เลื่อนเมาส์ไปชี้ที่ "มุมขวาล่าง" ของหน้าหนังสือ ค้างไว้จนครบ 5 วินาทีครับ');
+            startCaptureCountdown(btnCaptureBR, 'Lock Bottom-Right (5s)', (pos) => {
+                rpaConfig.br = pos;
+                bboxBR.innerText = `BR: ${pos.x}, ${pos.y}`;
+            });
+        });
+
+        btnRpaPreview.addEventListener('click', () => {
+            let crop_box = null;
+            if(rpaConfig.tl && rpaConfig.br) {
+                crop_box = {
+                    x: Math.min(rpaConfig.tl.x, rpaConfig.br.x),
+                    y: Math.min(rpaConfig.tl.y, rpaConfig.br.y),
+                    w: Math.abs(rpaConfig.br.x - rpaConfig.tl.x),
+                    h: Math.abs(rpaConfig.br.y - rpaConfig.tl.y)
+                };
+            }
+            
+            fetch('/api/rpa/preview', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    monitor_id: rpaMonitor.value,
+                    crop_box: crop_box
+                })
+            }).then(r => r.json()).then(data => {
+                if(data.status === 'success') {
+                    rpaPreviewImg.src = `data:image/jpeg;base64,${data.image}`;
+                    rpaPreviewBox.classList.remove('hidden');
+                }
+            });
+        });
+
+        btnLaunchBrowser.addEventListener('click', () => {
+            fetch('/api/rpa/launch_browser', {method: 'POST'})
+                .then(r => r.json())
+                .then(data => {
+                    if(data.status === 'success') {
+                        addLog('[System] Launched DRM-Bypass Browser.', 'success');
+                    } else {
+                        addLog(`[Error] ${data.message}`, 'error');
+                    }
+                });
+        });
+
+        btnStartRpa.addEventListener('click', () => {
+            let crop_box = null;
+            if(rpaConfig.tl && rpaConfig.br) {
+                crop_box = {
+                    x: Math.min(rpaConfig.tl.x, rpaConfig.br.x),
+                    y: Math.min(rpaConfig.tl.y, rpaConfig.br.y),
+                    w: Math.abs(rpaConfig.br.x - rpaConfig.tl.x),
+                    h: Math.abs(rpaConfig.br.y - rpaConfig.tl.y)
+                };
+            }
+            
+            const config = {
+                monitor_id: rpaMonitor.value,
+                crop_box: crop_box,
+                trigger_type: rpaTrigger.value,
+                trigger_pos: rpaConfig.clickPos,
+                delay: parseFloat(document.getElementById('rpaDelay').value),
+                max_pages: parseInt(document.getElementById('rpaMaxPages').value),
+                output_format: document.getElementById('rpaFormat').value,
+                output_name: customNameInput.value.trim()
+            };
+
+            btnStartRpa.disabled = true;
+            btnStartRpa.classList.add('opacity-50');
+
+            fetch('/api/rpa/start', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(config)
+            }).then(r => r.json()).then(data => {
+                const taskId = data.task_id;
+                logCount = 0;
+                logContainer.innerHTML = '';
+                addLog('[System] Starting Universal RPA Macro...', 'success');
+                
+                if (logInterval) clearInterval(logInterval);
+                logInterval = setInterval(() => {
+                    fetch(`/api/logs?task_id=${taskId}`)
+                    .then(r => r.json())
+                    .then(res => {
+                        const logs = res.logs;
+                        for (let i = logCount; i < logs.length; i++) {
+                            const msg = logs[i];
+                            addLog(msg);
+                            
+                            // Update the "Successfully Downloaded Files" list for RPA
+                            if (msg.includes('[SUCCESS] RPA finished. Saved ')) {
+                                const matchedFile = msg.split(' pages to ')[1].trim();
+                                const listContainer = document.getElementById('downloadedList');
+                                const emptyState = document.getElementById('emptyState');
+                                if (emptyState) emptyState.remove();
+                                
+                                const baseName = matchedFile.replace(/.*[\/\\]/, '');
+                                
+                                const existingItems = Array.from(listContainer.querySelectorAll('span.truncate')).map(el => el.getAttribute('data-base'));
+                                if (!existingItems.includes(baseName)) {
+                                    const entry = document.createElement('div');
+                                    entry.className = 'flex items-center gap-3 p-3 bg-surface-container rounded-lg border border-outline-variant/50 animate-in fade-in';
+                                    entry.innerHTML = `
+                                        <span class="material-symbols-outlined text-primary text-[20px]" data-icon="check_circle">check_circle</span>
+                                        <span class="truncate text-on-surface" title="${matchedFile}" data-base="${baseName}">${baseName}</span>
+                                    `;
+                                    listContainer.appendChild(entry);
+                                    listContainer.scrollTop = listContainer.scrollHeight;
+                                }
+                            }
+                        }
+                        if (res.status === "finished") {
+                            clearInterval(logInterval);
+                            btnStartRpa.disabled = false;
+                            btnStartRpa.classList.remove('opacity-50');
+                            addLog('[System] RPA Task Finished.', 'success');
+                        }
+                        logCount = logs.length;
+                    });
+                }, 1000);
+            });
+        });
 
     </script>
 </body></html>

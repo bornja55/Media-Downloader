@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MEDIA_CORE_DL - Universal Media Downloader</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-container": "#00285d",
+                    "tertiary-container": "#df7412",
+                    "on-surface-variant": "var(--color-on-surface-variant, #c2c6d6)",
+                    "outline-variant": "var(--color-outline-variant, #424754)",
+                    "background": "var(--color-background, #131313)",
+                    "surface-variant": "#353534",
+                    "on-background": "#e5e2e1",
+                    "secondary-fixed-dim": "#b9c8de",
+                    "on-primary-fixed-variant": "#004395",
+                    "primary": "var(--color-primary, #adc6ff)",
+                    "primary-container": "#4d8eff",
+                    "error": "var(--color-error, #ffb4ab)",
+                    "primary-fixed": "#d8e2ff",
+                    "on-tertiary-fixed": "#311400",
+                    "tertiary-fixed": "#ffdcc6",
+                    "secondary-container": "var(--color-secondary-container, #39485a)",
+                    "on-primary": "#002e6a",
+                    "primary-fixed-dim": "#adc6ff",
+                    "on-tertiary-fixed-variant": "#723600",
+                    "on-primary-fixed": "#001a42",
+                    "surface-container-lowest": "var(--color-surface-container-lowest, #0e0e0e)",
+                    "surface-bright": "#393939",
+                    "secondary": "#b9c8de",
+                    "on-secondary-fixed": "#0d1c2d",
+                    "tertiary-fixed-dim": "#ffb786",
+                    "secondary-fixed": "#d4e4fa",
+                    "on-surface": "var(--color-on-surface, #e5e2e1)",
+                    "error-container": "#93000a",
+                    "on-tertiary-container": "#461f00",
+                    "surface-container-highest": "var(--color-surface-container-highest, #353534)",
+                    "on-secondary": "#233143",
+                    "surface-container-high": "var(--color-surface-container-high, #2a2a2a)",
+                    "inverse-surface": "#e5e2e1",
+                    "inverse-on-surface": "#313030",
+                    "surface-dim": "#131313",
+                    "on-secondary-fixed-variant": "#39485a",
+                    "inverse-primary": "#005ac2",
+                    "surface": "var(--color-surface, #131313)",
+                    "tertiary": "#ffb786",
+                    "on-tertiary": "#502400",
+                    "on-error": "#690005",
+                    "on-secondary-container": "var(--color-on-secondary-container, #a7b6cc)",
+                    "on-error-container": "#ffdad6",
+                    "surface-tint": "#adc6ff",
+                    "surface-container-low": "var(--color-surface-container-low, #1c1b1b)",
+                    "outline": "#8c909f",
+                    "surface-container": "var(--color-surface-container, #201f1f)"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "lg": "24px",
+                    "md": "16px",
+                    "gutter": "16px",
+                    "xl": "32px",
+                    "base": "4px",
+                    "xs": "4px",
+                    "margin-desktop": "32px",
+                    "margin-mobile": "16px",
+                    "sm": "8px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Inter", "sans-serif"],
+                    "headline-md": ["Inter", "sans-serif"],
+                    "body-sm": ["Inter", "sans-serif"],
+                    "label-sm": ["Inter", "sans-serif"],
+                    "body-lg": ["Inter", "sans-serif"],
+                    "label-md": ["Inter", "sans-serif"],
+                    "mono": ["JetBrains Mono", "monospace"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "14px", "letterSpacing": "0.03em", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+/* Light Mode overrides */
+html:not(.dark) {
+  --color-surface: #ffffff;
+  --color-background: #f8f9fa;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f8f9fa;
+  --color-surface-container: #f1f3f5;
+  --color-surface-container-high: #e9ecef;
+  --color-surface-container-highest: #dee2e6;
+  --color-on-surface: #121212;
+  --color-on-surface-variant: #495057;
+  --color-outline-variant: #ced4da;
+  --color-primary: #005ac2;
+  --color-error: #ba1a1a;
+  --color-secondary-container: #d4e4fa;
+  --color-on-secondary-container: #0d1c2d;
+}
+      body {
+        background-color: var(--color-background, #131313);
+        color: var(--color-on-surface, #e5e2e1);
+        font-family: 'Inter', sans-serif;
+      }
+      .terminal-glow {
+        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
+      }
+      .download-glow {
+        box-shadow: 0 0 15px rgba(0, 90, 194, 0.3);
+      }
+      html.dark .terminal-glow {
+        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+      }
+      html.dark .download-glow {
+        box-shadow: 0 0 15px rgba(173, 198, 255, 0.3);
+      }
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--color-surface-container-low, #1c1b1b);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--color-outline-variant, #424754);
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--color-on-surface-variant, #c2c6d6);
+      }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="bg-surface text-primary font-headline-md text-headline-md docked full-width top-0 border-b border-outline-variant flex justify-between items-center w-full px-gutter h-16 sticky z-50">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="terminal">terminal</span>
+<span class="font-headline-md text-headline-md font-bold tracking-tighter text-primary">MEDIA_CORE_DL</span>
+</div>
+<!-- Desktop Navigation Tabs integrated into AppBar as requested -->
+<nav class="flex items-center h-full gap-2 md:gap-8 overflow-x-auto hide-scrollbar w-full md:w-auto">
+<button id="tab-video" class="h-full px-2 flex items-center gap-2 text-primary border-b-2 border-primary transition-colors font-label-md text-label-md">
+<span class="material-symbols-outlined" data-icon="movie">movie</span>
+                Video
+            </button>
+<button id="tab-sound" class="h-full px-2 flex items-center gap-2 text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md">
+<span class="material-symbols-outlined" data-icon="audiotrack">audiotrack</span>
+                Sound
+            </button>
+<button id="tab-pdf" class="h-full px-2 flex items-center gap-2 text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md">
+<span class="material-symbols-outlined" data-icon="picture_as_pdf">picture_as_pdf</span>
+                PDF
+            </button>
+<button id="tab-image" class="h-full px-2 flex items-center gap-2 text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md">
+<span class="material-symbols-outlined" data-icon="image">image</span>
+                Image
+            </button>
+</nav>
+<div class="flex items-center gap-2">
+    <button id="themeToggleBtn" class="text-on-surface-variant hover:bg-surface-container-high p-2 rounded-full transition-colors flex items-center justify-center" title="Toggle Light/Dark Mode">
+        <span id="themeIcon" class="material-symbols-outlined" data-icon="dark_mode">dark_mode</span>
+    </button>
+    <button id="settingsBtn" class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container-high p-2 rounded-full transition-colors" data-icon="settings">settings</button>
+</div>
+</header>
+<main class="flex-grow flex flex-col p-gutter lg:p-xl max-w-7xl mx-auto w-full gap-lg">
+<!-- Main Two-Column Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-lg h-full lg:min-h-[500px]">
+<!-- Left Column: Source URL Entry -->
+<section class="lg:col-span-8 flex flex-col gap-base h-full">
+<div class="flex items-center justify-between mb-2">
+<h2 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="link">link</span>
+                        Input Queue
+                    </h2>
+<span class="text-label-sm font-label-sm text-on-surface-variant opacity-60">Source URLs (one per line)</span>
+</div>
+<div class="relative h-[180px] lg:h-[220px] flex-shrink-0 bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden focus-within:border-primary transition-colors group">
+<textarea class="w-full h-full bg-transparent border-none focus:ring-0 text-primary font-mono p-md resize-none placeholder:text-outline/40 text-body-md" id="urlInput" placeholder="https://example.com/video/123
+https://source.net/media/abc"></textarea>
+<div class="absolute bottom-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="bg-surface-container-high hover:bg-surface-container-highest text-on-surface px-3 py-1.5 rounded-lg text-label-sm flex items-center gap-1 border border-outline-variant">
+<span class="material-symbols-outlined text-[18px]" data-icon="content_paste">content_paste</span>
+                            Paste
+                        </button>
+<button class="bg-surface-container-high hover:bg-surface-container-highest text-on-surface px-3 py-1.5 rounded-lg text-label-sm flex items-center gap-1 border border-outline-variant" onclick="document.getElementById('urlInput').value=''">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete_sweep">delete_sweep</span>
+                            Clear
+                        </button>
+</div>
+</div>
+
+<!-- Manga/Image Options -->
+<div id="imageOptions" class="hidden flex flex-col gap-2 mt-2 px-2">
+    <label class="text-label-sm text-on-surface-variant">Output Format:</label>
+    <select id="packageFormat" class="bg-surface-container-lowest border border-outline-variant rounded-lg px-3 py-2 text-body-md focus:border-primary focus:ring-1 focus:ring-primary transition-all text-on-surface">
+        <option value="raw">Raw Images (.jpg, .png)</option>
+        <option value="cbz">Comic Book Archive (.cbz)</option>
+        <option value="pdf">PDF Document (.pdf)</option>
+    </select>
+</div>
+
+<!-- CTA Button Moved Here -->
+<button class="download-glow mt-2 bg-primary-container text-on-primary-container font-bold rounded-xl py-5 px-6 flex items-center justify-center gap-3 active:scale-95 transition-all duration-200 hover:brightness-110" id="downloadBtn">
+<span class="material-symbols-outlined text-[28px]" data-icon="download">download</span>
+<span class="text-headline-md font-headline-md">Download Queue</span>
+</button>
+
+<!-- Bottom Section: Status Log -->
+<section class="w-full flex flex-col gap-base mt-2 flex-grow">
+<div class="flex items-center justify-between">
+<h3 class="font-label-md text-label-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="history">history</span>
+                    System Status Log
+                </h3>
+<div class="flex gap-4">
+<span class="flex items-center gap-1.5 text-label-sm text-on-surface-variant">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                        Service Online
+                    </span>
+<span class="text-label-sm text-on-surface-variant font-mono">v5.0.0-core</span>
+</div>
+</div>
+<div class="flex flex-col gap-2 hidden" id="progressContainer">
+    <div class="flex justify-between items-center text-label-sm text-on-surface-variant font-mono">
+        <span id="progressLabel">Downloading...</span>
+        <span id="progressText">0%</span>
+    </div>
+    <div class="w-full h-1.5 bg-surface-container-highest rounded-full overflow-hidden">
+        <div id="progressBar" class="h-full bg-primary transition-all duration-300" style="width: 0%"></div>
+    </div>
+</div>
+<div class="w-full h-40 lg:flex-grow min-h-[120px] bg-surface-container-lowest border border-outline-variant rounded-xl p-md font-mono text-body-sm overflow-y-auto terminal-glow flex flex-col gap-1" id="statusLog">
+<div class="flex gap-4 text-on-surface-variant/40">
+<span class="whitespace-nowrap">[14:20:01]</span>
+<span>MEDIA_CORE Kernel successfully initialized. All protocols ready.</span>
+</div>
+<div class="flex gap-4 text-on-surface-variant/40">
+<span class="whitespace-nowrap">[14:20:05]</span>
+<span>Loading FFmpeg binaries... OK</span>
+</div>
+<div class="flex gap-4 text-primary/80">
+<span class="whitespace-nowrap">[14:21:42]</span>
+<span>System idle. Awaiting user input queue.</span>
+</div>
+</div>
+</section>
+
+</section>
+<!-- Right Column: Settings & CTA -->
+<section class="lg:col-span-4 flex flex-col gap-lg h-full">
+<!-- Configuration Card -->
+<div class="bg-surface-container border border-outline-variant p-md rounded-xl flex flex-col gap-md">
+<h3 class="font-label-md text-label-md text-primary uppercase tracking-widest">Extraction Settings</h3>
+<!-- Filename Input -->
+<div class="flex flex-col gap-xs">
+<label class="text-label-sm font-label-sm text-on-surface-variant">Custom Filename (Optional)</label>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary" data-icon="edit_note">edit_note</span>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg pl-10 pr-3 py-2.5 text-body-md focus:border-primary focus:ring-1 focus:ring-primary transition-all text-on-surface" placeholder="media_export_%(title)s" type="text"/>
+</div>
+</div>
+<!-- Additional Options -->
+<div class="flex flex-col gap-sm pt-2">
+<label class="flex items-center gap-3 cursor-pointer group">
+<input checked="" class="w-5 h-5 rounded border-outline-variant bg-surface-container-low text-primary focus:ring-primary" type="checkbox"/>
+<span class="text-body-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Embed Thumbnails</span>
+</label>
+<label class="flex items-center gap-3 cursor-pointer group">
+<input class="w-5 h-5 rounded border-outline-variant bg-surface-container-low text-primary focus:ring-primary" type="checkbox"/>
+<span class="text-body-sm text-on-surface-variant group-hover:text-on-surface transition-colors">Convert to MP4/MP3</span>
+</label>
+</div>
+
+<!-- Custom Cookies Textarea -->
+<div class="flex flex-col gap-xs pt-4 border-t border-outline-variant">
+<label class="text-label-sm font-label-sm text-on-surface-variant flex items-center justify-between">
+    <span>Custom Cookies (Netscape format) [Optional]</span>
+    <a href="https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc" target="_blank" class="text-primary hover:underline flex items-center gap-1 text-[11px] bg-primary/10 px-2 py-0.5 rounded-full">
+        <span class="material-symbols-outlined text-[14px]" data-icon="extension">extension</span> Extension
+    </a>
+</label>
+<div class="relative group h-32">
+<span class="material-symbols-outlined absolute left-3 top-3 text-on-surface-variant group-focus-within:text-primary" data-icon="data_object">data_object</span>
+<textarea id="customCookies" class="w-full h-full bg-surface-container-low border border-outline-variant rounded-lg pl-10 pr-3 py-2.5 text-body-xs font-mono text-on-surface focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-none placeholder:text-outline-variant/60" placeholder="# Netscape HTTP Cookie File..."></textarea>
+</div>
+<p class="text-[11px] text-on-surface-variant/70 mt-1">วางคุกกี้เพื่อดาวน์โหลดคลิปส่วนตัว (Member-only / Private Group)</p>
+</div>
+</div>
+<!-- Downloaded Files List -->
+<div class="relative w-full h-[200px] lg:flex-grow min-h-[150px] rounded-xl overflow-hidden border border-outline-variant bg-surface-container-lowest flex flex-col">
+    <div class="bg-surface-container-high px-4 py-3 border-b border-outline-variant flex items-center gap-2 text-primary font-label-md">
+        <span class="material-symbols-outlined text-[20px]" data-icon="folder_special">folder_special</span>
+        Successfully Downloaded Files
+    </div>
+    <div id="downloadedList" class="flex-grow p-4 overflow-y-auto flex flex-col gap-2 font-mono text-body-sm text-on-surface-variant">
+        <div class="text-center opacity-50 mt-8" id="emptyState">No files downloaded yet...</div>
+    </div>
+</div>
+</section>
+</div>
+</main>
+<!-- BottomNavBar (Mobile only suppression check handled by md:hidden in layout if needed) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center py-2 bg-surface border-t border-outline-variant z-50 shadow-lg">
+<div class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-xl px-4 py-1 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+<span class="font-label-sm text-label-sm">Downloader</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:text-primary active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="folder">folder</span>
+<span class="font-label-sm text-label-sm">Library</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:text-primary active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="code">code</span>
+<span class="font-label-sm text-label-sm">Terminal</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:text-primary active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm">Account</span>
+</div>
+</nav>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-[100] backdrop-blur-sm px-4">
+        <div class="bg-surface border border-outline-variant rounded-2xl w-full max-w-md shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div class="px-6 py-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+                <h2 class="font-headline-sm text-on-surface flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary" data-icon="settings">settings</span>
+                    Configuration
+                </h2>
+                <button id="closeSettingsBtn" class="text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high p-2 rounded-full transition-colors">
+                    <span class="material-symbols-outlined" data-icon="close">close</span>
+                </button>
+            </div>
+            
+            <div class="p-6 flex flex-col gap-6">
+                <!-- Output Directory -->
+                <div class="flex flex-col gap-2">
+                    <label class="text-label-md font-label-md text-on-surface-variant">Output Directory</label>
+                    <div class="relative flex items-center gap-2">
+                        <div class="relative group flex-grow">
+                            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant group-focus-within:text-primary" data-icon="folder_open">folder_open</span>
+                            <input id="outputDirInput" class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg pl-10 pr-3 py-2.5 text-body-md focus:border-primary focus:ring-1 focus:ring-primary transition-all text-on-surface" placeholder="Leave empty for current directory" type="text"/>
+                        </div>
+                        <button id="browseFolderBtn" class="bg-surface-container-high hover:bg-surface-container-highest border border-outline-variant p-2.5 rounded-lg transition-colors flex items-center justify-center text-on-surface" title="Browse Folder">
+                            <span class="material-symbols-outlined text-[20px]" data-icon="search">search</span>
+                        </button>
+                    </div>
+                    <span class="text-body-xs text-on-surface-variant opacity-70">Example: C:\Users\Downloads\Media</span>
+                </div>
+
+
+
+                <hr class="border-outline-variant">
+
+                <!-- Action Buttons -->
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="clearCookies()" class="bg-error/10 hover:bg-error/20 text-error border border-error/20 rounded-xl py-3 flex flex-col items-center justify-center gap-1 transition-colors">
+                        <span class="material-symbols-outlined" data-icon="delete">delete</span>
+                        <span class="text-label-sm font-label-sm">Clear Cookies</span>
+                    </button>
+                    <button onclick="clearLogs()" class="bg-surface-container-high hover:bg-surface-container-highest text-on-surface rounded-xl py-3 flex flex-col items-center justify-center gap-1 border border-outline-variant transition-colors">
+                        <span class="material-symbols-outlined" data-icon="clear_all">clear_all</span>
+                        <span class="text-label-sm font-label-sm">Clear Logs</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+        // State management
+        let currentMode = "video"; 
+        
+        // Elements
+        const tabs = {
+            "video": document.getElementById('tab-video'),
+            "sound": document.getElementById('tab-sound'),
+            "pdf": document.getElementById('tab-pdf'),
+            "image": document.getElementById('tab-image')
+        };
+        
+        function switchTab(mode) {
+            currentMode = mode;
+            for (const [key, el] of Object.entries(tabs)) {
+                if (key === mode) {
+                    el.className = "h-full px-2 flex items-center gap-2 text-primary border-b-2 border-primary transition-colors font-label-md text-label-md";
+                } else {
+                    el.className = "h-full px-2 flex items-center gap-2 text-on-surface-variant hover:bg-surface-container-high transition-colors font-label-md text-label-md";
+                }
+            }
+            
+            // Show/Hide Image specific options
+            const imageOptions = document.getElementById('imageOptions');
+            if(mode === 'image') {
+                imageOptions.classList.remove('hidden');
+            } else {
+                imageOptions.classList.add('hidden');
+            }
+        }
+
+        tabs.video.addEventListener("click", () => switchTab("video"));
+        tabs.sound.addEventListener("click", () => switchTab("sound"));
+        tabs.pdf.addEventListener("click", () => switchTab("pdf"));
+        tabs.image.addEventListener("click", () => switchTab("image"));
+
+        const logContainer = document.getElementById('statusLog');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const urlInput = document.getElementById('urlInput');
+        const customNameInput = document.querySelector('input[placeholder*="media_export"]');
+        const customCookiesInput = document.getElementById('customCookies');
+        const packageFormatInput = document.getElementById('packageFormat');
+        let logInterval = null;
+        let logCount = 0;
+
+        function addLog(message, type = 'default') {
+            const entry = document.createElement('div');
+            entry.className = 'flex gap-4 animate-in fade-in slide-in-from-left-2 duration-300';
+            const colorClass = type === 'error' ? 'text-error' : (type === 'success' ? 'text-primary' : 'text-on-surface-variant/70');
+            entry.innerHTML = `<span class="${colorClass}">${message}</span>`;
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        downloadBtn.addEventListener('click', () => {
+            const urls = urlInput.value.trim().split('\n').map(u => u.trim()).filter(u => u);
+            if(urls.length === 0) {
+                addLog("Error: No URL provided.", "error");
+                return;
+            }
+            
+            // Validate URLs based on selected mode
+            for (const u of urls) {
+                const isFlipbook = u.toLowerCase().includes("fliphtml5.com") || u.toLowerCase().includes("anyflip.com");
+                if (currentMode === "pdf" && !isFlipbook) {
+                    alert(`URL ไม่ถูกต้อง!\n\nลิงก์ "${u}" ไม่ใช่หนังสือ Flipbook (FlipHTML5/AnyFlip)\n\nถ้าต้องการโหลดวิดีโอหรือเสียง กรุณาเลือก Tab ด้านบนให้ถูกต้องครับ`);
+                    addLog(`[Error] Invalid URL for PDF mode: ${u}`, "error");
+                    return;
+                }
+                if ((currentMode === "video" || currentMode === "sound" || currentMode === "image") && isFlipbook) {
+                    alert(`URL ไม่ถูกต้อง!\n\nลิงก์ "${u}" เป็นหนังสือ Flipbook\n\nกรุณาเลือก Tab "PDF" ด้านบนเพื่อดาวน์โหลดครับ`);
+                    addLog(`[Error] Invalid URL for Media mode: ${u}`, "error");
+                    return;
+                }
+            }
+            
+            downloadBtn.disabled = true;
+            downloadBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            
+            fetch('/api/download', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    url: urlInput.value, 
+                    browser: 'none',
+                    custom_name: customNameInput.value.trim() !== "" ? customNameInput.value.trim() : null,
+                    mode: currentMode,
+                    custom_cookies: customCookiesInput.value.trim() !== "" ? customCookiesInput.value.trim() : null,
+                    package_format: packageFormatInput.value
+                })
+            }).then(r => r.json())
+              .then(data => {
+                const taskId = data.task_id;
+                logCount = 0;
+                logContainer.innerHTML = '';
+                addLog(`[System] Started batch download task in ${currentMode.toUpperCase()} mode...`, "success");
+                
+                let currentProcessingFile = "";
+                
+                if (logInterval) clearInterval(logInterval);
+                logInterval = setInterval(() => {
+                    fetch(`/api/logs?task_id=${taskId}`)
+                    .then(r => r.json())
+                    .then(res => {
+                        const logs = res.logs;
+                        for (let i = logCount; i < logs.length; i++) {
+                            const msg = logs[i];
+                            addLog(msg);
+
+                            // Update current processing file name
+                            if (msg.includes('[download] Destination: ')) {
+                                let f = msg.split('[download] Destination: ')[1].trim();
+                                currentProcessingFile = f.replace(/^.*[\\\/]/, '').replace(/\.f\d+/g, '').replace(/\.[^/.]+$/, "");
+                            } else if (msg.includes('[*] Document Title: ')) {
+                                currentProcessingFile = msg.split('[*] Document Title: ')[1].trim();
+                            }
+
+                            // Progress Extraction
+                            const pdfMatch = msg.match(/\[\*\] Page (\d+)\/(\d+) downloaded/);
+                            const ytMatch = msg.match(/\[download\]\s+([\d\.]+)%/);
+                            
+                            let prefix = currentProcessingFile ? `<span class="opacity-70 truncate max-w-[200px] inline-block align-bottom">${currentProcessingFile}</span> - ` : "";
+
+                            if (pdfMatch) {
+                                const current = parseInt(pdfMatch[1]);
+                                const total = parseInt(pdfMatch[2]);
+                                const percent = Math.round((current / total) * 100);
+                                document.getElementById('progressContainer').classList.remove('hidden');
+                                document.getElementById('progressLabel').innerHTML = `${prefix}Downloading PDF Pages (${current}/${total})`;
+                                document.getElementById('progressText').innerText = `${percent}%`;
+                                document.getElementById('progressBar').style.width = `${percent}%`;
+                            } else if (ytMatch) {
+                                const percent = parseFloat(ytMatch[1]);
+                                document.getElementById('progressContainer').classList.remove('hidden');
+                                document.getElementById('progressLabel').innerHTML = `${prefix}Downloading Video/Audio`;
+                                document.getElementById('progressText').innerText = `${percent}%`;
+                                document.getElementById('progressBar').style.width = `${percent}%`;
+                            } else if (msg.includes('Combining') || msg.includes('Merging formats')) {
+                                document.getElementById('progressLabel').innerHTML = `${prefix}Processing file...`;
+                                document.getElementById('progressText').innerText = `99%`;
+                                document.getElementById('progressBar').style.width = `99%`;
+                            }
+
+                            if (msg.includes('[SUCCESS] All tasks finished!') || msg.includes('[+] Download completed successfully!')) {
+                                document.getElementById('progressContainer').classList.add('hidden');
+                                document.getElementById('progressBar').style.width = `100%`;
+                            }
+
+                            // Extract filename/path
+                            let matchedFile = null;
+                            if (msg.includes('[SUCCESS] Saved to: ')) {
+                                matchedFile = msg.split('[SUCCESS] Saved to: ')[1].trim();
+                                document.getElementById('progressContainer').classList.add('hidden');
+                            } else if (msg.includes('[download] Destination: ')) {
+                                matchedFile = msg.split('[download] Destination: ')[1].trim();
+                            } else if (msg.includes('has already been downloaded')) {
+                                const parts = msg.split('has already been downloaded');
+                                if (parts.length > 0) {
+                                    matchedFile = parts[0].replace('[download]', '').trim();
+                                }
+                            } else if (msg.includes('[Merger] Merging formats into "')) {
+                                matchedFile = msg.split('[Merger] Merging formats into "')[1].split('"')[0].trim();
+                            }
+
+                            if (matchedFile) {
+                                const listContainer = document.getElementById('downloadedList');
+                                const emptyState = document.getElementById('emptyState');
+                                if (emptyState) emptyState.remove();
+                                
+                                // Clean up the matched file text slightly if it has ANSI color codes
+                                matchedFile = matchedFile.replace(/\x1b\[[0-9;]*m/g, '');
+                                
+                                // Deduplicate by base name to avoid audio/video/merged duplicates
+                                const baseName = matchedFile.replace(/\.f\d+/g, '').replace(/\.[^/.]+$/, "");
+                                
+                                // Check if already exists in list to avoid duplicates
+                                const existingItems = Array.from(listContainer.querySelectorAll('span.truncate')).map(el => el.getAttribute('data-base'));
+                                if (!existingItems.includes(baseName)) {
+                                    const entry = document.createElement('div');
+                                    entry.className = 'flex items-center gap-3 p-3 bg-surface-container rounded-lg border border-outline-variant/50 animate-in fade-in';
+                                    entry.innerHTML = `
+                                        <span class="material-symbols-outlined text-primary text-[20px]" data-icon="check_circle">check_circle</span>
+                                        <span class="truncate text-on-surface" title="${matchedFile}" data-base="${baseName}">${baseName}</span>
+                                    `;
+                                    listContainer.appendChild(entry);
+                                    listContainer.scrollTop = listContainer.scrollHeight;
+                                }
+                            }
+                        }
+                        if (res.status === "finished") {
+                            clearInterval(logInterval);
+                            downloadBtn.disabled = false;
+                            downloadBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                        }
+                        logCount = logs.length;
+                    });
+                }, 1000);
+            }).catch(e => {
+                addLog("Error: Could not connect to server.", "error");
+                downloadBtn.disabled = false;
+                downloadBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            });
+        });
+
+        // Clear default mock logs on load
+        logContainer.innerHTML = '';
+        addLog('[System] Ready for input. Waiting for URL...', 'success');
+
+        // --- Settings Modal Logic ---
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsModal = document.getElementById('settingsModal');
+        const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+        const outputDirInput = document.getElementById('outputDirInput');
+        const browseFolderBtn = document.getElementById('browseFolderBtn');
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        const themeIcon = document.getElementById('themeIcon');
+
+        // Load config from backend
+        fetch('/api/config')
+            .then(r => r.json())
+            .then(data => {
+                if (data.output_dir) outputDirInput.value = data.output_dir;
+                if (data.theme === 'light') {
+                    document.documentElement.classList.remove('dark');
+                    themeIcon.innerText = 'light_mode';
+                }
+            })
+            .catch(e => console.log('Config load error:', e));
+
+        // Save config helper
+        const saveConfig = () => {
+            const config = {
+                output_dir: outputDirInput.value.trim(),
+                theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
+            };
+            fetch('/api/config', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(config)
+            });
+        };
+
+        settingsBtn.addEventListener('click', () => {
+            settingsModal.classList.remove('hidden');
+            settingsModal.classList.add('flex');
+        });
+
+        closeSettingsBtn.addEventListener('click', () => {
+            settingsModal.classList.add('hidden');
+            settingsModal.classList.remove('flex');
+            saveConfig();
+        });
+
+        outputDirInput.addEventListener('change', saveConfig);
+
+        browseFolderBtn.addEventListener('click', () => {
+            fetch('/api/browse-folder')
+                .then(r => r.json())
+                .then(data => {
+                    if (data.path) {
+                        outputDirInput.value = data.path;
+                        saveConfig();
+                    }
+                })
+                .catch(e => console.error("Browse folder error:", e));
+        });
+
+        themeToggleBtn.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.toggle('dark');
+            if (isDark) {
+                themeIcon.innerText = 'dark_mode';
+            } else {
+                themeIcon.innerText = 'light_mode';
+            }
+            saveConfig();
+        });
+
+        function clearCookies() {
+            if(!confirm("Are you sure you want to delete stored custom cookies?")) return;
+            fetch('/api/clear-cookies', { method: 'POST' })
+            .then(r => r.json())
+            .then(data => {
+                alert(data.message);
+            });
+        }
+
+        function clearLogs() {
+            logContainer.innerHTML = '';
+            addLog('[System] Logs cleared.', 'success');
+        }
+
+    </script>
+</body></html>
