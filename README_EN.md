@@ -11,10 +11,10 @@ A premium all-in-one web application (Web GUI) for downloading all types of medi
 ---
 
 ## 🆕 What's New in Version 6.1 (Bug Fixes & Stability)
-- **Manga PDF Data Loss Fix**: Fixed an issue where images were silently deleted if PDF conversion failed. The system now safely falls back to creating a `.cbz` archive instead.
-- **Cookie Race Condition Fix**: Added support for concurrent downloads with different custom cookies by utilizing isolated temporary cookie files per task.
-- **RPA Smart Detection**: Improved the "end-of-book" detection in RPA mode to use Root Mean Square (RMS) instead of exact pixel matching, preventing infinite loops caused by minor web animations.
-- **RPA Crash Protection**: Added a fallback mechanism to prevent thread crashes when users input invalid Output Directories in the Settings.
+- **Automatic Image Backup**: Never lose your downloaded images again! If your PC doesn't support creating PDF files, the system will now automatically pack all your images into a comic book format (.cbz) so you always get a complete file.
+- **Seamless Multiple Downloads**: Unlock the limits! You can now queue up multiple downloads at the same time smoothly. Even if each download uses a different account or login session, the system will handle them separately without getting confused.
+- **Smarter Flipbook Reader**: Say goodbye to the app freezing when it encounters websites with background animations or flashy effects. The new scanner is smart enough to ignore those and will continue reading until the very last page without a hitch.
+- **Smart Folder Recovery**: If you accidentally type in the wrong folder name or select a drive that doesn't exist, the app won't crash or close on you. It will gracefully recover and save your files to the default backup folder instead.
 
 ---
 
