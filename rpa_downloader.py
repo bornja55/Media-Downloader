@@ -6,7 +6,7 @@ import os
 import io
 import tempfile
 import zipfile
-from PIL import Image, ImageChops
+from PIL import Image, ImageChops, ImageStat
 import numpy as np
 
 def get_monitors():
@@ -58,11 +58,14 @@ def capture_screen_base64(monitor_id=1, crop_box=None):
         return img_str
 
 def are_images_identical(img1, img2):
-    """Returns True if the two PIL Images are identical."""
+    """Returns True if the two PIL Images are identical or extremely similar."""
     if img1 is None or img2 is None:
         return False
     diff = ImageChops.difference(img1, img2)
-    return not diff.getbbox()
+    stat = ImageStat.Stat(diff)
+    # Average RMS difference across RGB channels. Under 1.0 means practically identical
+    rms = sum(stat.rms) / len(stat.rms)
+    return rms < 1.0
 
 def start_rpa_task(config, progress_callback=None, check_cancel=None):
     """
@@ -76,7 +79,13 @@ def start_rpa_task(config, progress_callback=None, check_cancel=None):
     max_pages = int(config.get('max_pages', 100))
     
     output_dir = config.get('output_dir', "rpa_output")
-    os.makedirs(output_dir, exist_ok=True)
+    try:
+        os.makedirs(output_dir, exist_ok=True)
+    except Exception as e:
+        if progress_callback:
+            progress_callback(f"[WARNING] Invalid output directory '{output_dir}'. Falling back to 'rpa_output'")
+        output_dir = "rpa_output"
+        os.makedirs(output_dir, exist_ok=True)
     temp_dir = tempfile.mkdtemp()
     
     image_paths = []

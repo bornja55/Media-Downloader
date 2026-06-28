@@ -42,7 +42,7 @@ class NativeLogger:
     def error(self, msg):
         self.callback(f"[ERROR] {msg}")
 
-def download_media(url, browser="chrome", custom_name=None, audio_only=False, log_callback=print):
+def download_media(url, browser="chrome", custom_name=None, audio_only=False, log_callback=print, cookie_file=None):
     def progress_hook(d):
         if d['status'] == 'downloading':
             # Reduce spam by only logging occasionally or just let logger handle it
@@ -65,8 +65,7 @@ def download_media(url, browser="chrome", custom_name=None, audio_only=False, lo
             'progress_hooks': [progress_hook],
         }
         
-        cookie_file = "cookies.txt"
-        if os.path.exists(cookie_file):
+        if cookie_file and os.path.exists(cookie_file):
             log_callback(f"[*] Authenticating using cookie file: {cookie_file}...")
             ydl_opts['cookiefile'] = cookie_file
         elif browser and browser.lower() != "none":

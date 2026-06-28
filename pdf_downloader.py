@@ -46,7 +46,7 @@ def resolve_online_url(url: str) -> str:
     return url
 
 
-def download_flipbook(url: str, output_pdf: str, max_pages: int = 999, wait_load: float = 8.0, headless: bool = True, log_callback=print):
+def download_flipbook(url: str, output_pdf: str, max_pages: int = 999, wait_load: float = 8.0, headless: bool = True, log_callback=print, cookie_file=None):
     try:
         log_callback(f"[*] Analyzing URL: {url}")
         
@@ -86,23 +86,24 @@ def download_flipbook(url: str, output_pdf: str, max_pages: int = 999, wait_load
             log_callback(f"[*] Opening: {base_url}")
             driver.get(base_url)
             
-            cookie_file = "cookies.txt"
-            if os.path.exists(cookie_file):
-                import http.cookiejar
-                cj = http.cookiejar.MozillaCookieJar(cookie_file)
+            if cookie_file and os.path.exists(cookie_file):
                 try:
+                    import http.cookiejar
+                    cj = http.cookiejar.MozillaCookieJar(cookie_file)
                     cj.load(ignore_discard=True, ignore_expires=True)
-                    added = 0
-                    for c in cj:
-                        if c.domain.lstrip('.') in base_url:
-                            driver.add_cookie({'name': c.name, 'value': c.value, 'domain': c.domain, 'path': c.path})
-                            added += 1
-                    if added > 0:
-                        log_callback(f"[*] Injected {added} cookies into browser. Reloading page...")
-                        driver.refresh()
+                    for cookie in cj:
+                        driver.add_cookie({
+                            'name': cookie.name,
+                            'value': cookie.value,
+                            'domain': cookie.domain,
+                            'path': cookie.path
+                        })
+                    log_callback(f"[*] Injected cookies from {cookie_file} into Selenium.")
+                    driver.refresh()
+                    time.sleep(2)
                 except Exception as e:
-                    pass
-                    
+                    log_callback(f"[WARNING] Could not inject cookies: {e}")
+            
             log_callback(f"[*] Waiting {wait_load:.0f}s for page to load...")
             time.sleep(wait_load)
 
@@ -137,8 +138,7 @@ def download_flipbook(url: str, output_pdf: str, max_pages: int = 999, wait_load
 
         session = requests.Session()
         
-        cookie_file = "cookies.txt"
-        if os.path.exists(cookie_file):
+        if cookie_file and os.path.exists(cookie_file):
             import http.cookiejar
             cj = http.cookiejar.MozillaCookieJar(cookie_file)
             try:

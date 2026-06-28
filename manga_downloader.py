@@ -7,7 +7,7 @@ import time
 import shutil
 import zipfile
 
-def download_manga(url, log_callback, update_progress, custom_name, custom_cookies, output_dir, package_format):
+def download_manga(url, log_callback, update_progress, custom_name, has_cookies, output_dir, package_format, cookie_file=None):
     # Ensure gallery-dl downloads the entire post if a single photo URL is provided
     if "facebook.com" in url and "photo" in url and "set=" in url and "&setextract" not in url:
         url += "&setextract"
@@ -64,11 +64,11 @@ def download_manga(url, log_callback, update_progress, custom_name, custom_cooki
         cmd.extend(["--filename", f"image_{'{num:03d}'}.{'{extension}'}"])
         log_callback("[*] Document Mode: Images will be compiled into a .pdf file.")
     
-    if custom_cookies:
-        cookie_path = os.path.join(os.getcwd(), "cookies.txt")
+    if has_cookies and cookie_file:
+        cookie_path = os.path.join(os.getcwd(), cookie_file)
         if os.path.exists(cookie_path):
             cmd.extend(["--cookies", cookie_path])
-            log_callback("[*] Using Custom Cookies for authentication.")
+            log_callback(f"[*] Using Custom Cookies ({cookie_file}) for authentication.")
             
     cmd.append(url)
     
@@ -106,13 +106,17 @@ def download_manga(url, log_callback, update_progress, custom_name, custom_cooki
                     
                     if images:
                         if is_pdf:
-                            import img2pdf
-                            pdf_path = os.path.join(output_dir, f"{base_name}.pdf")
-                            with open(pdf_path, "wb") as f:
-                                f.write(img2pdf.convert(images))
-                            log_callback(f"[SUCCESS] Saved to: {pdf_path}")
+                            try:
+                                import img2pdf
+                                pdf_path = os.path.join(output_dir, f"{base_name}.pdf")
+                                with open(pdf_path, "wb") as f:
+                                    f.write(img2pdf.convert(images))
+                                log_callback(f"[SUCCESS] Saved to: {pdf_path}")
+                            except ImportError:
+                                log_callback("[ERROR] Required library (img2pdf) is missing. Cannot convert to PDF. Falling back to .cbz...")
+                                is_cbz = True
                         
-                        elif is_cbz:
+                        if is_cbz:
                             cbz_path = os.path.join(output_dir, f"{base_name}.cbz")
                             with zipfile.ZipFile(cbz_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
                                 for idx, img_path in enumerate(images):
@@ -123,8 +127,6 @@ def download_manga(url, log_callback, update_progress, custom_name, custom_cooki
                             log_callback(f"[SUCCESS] Saved to: {cbz_path}")
                     else:
                         log_callback("[ERROR] No valid images found to compile.")
-                except ImportError:
-                    log_callback("[ERROR] Required library (img2pdf) is missing. Cannot convert to PDF.")
                 except Exception as e:
                     log_callback(f"[ERROR] Failed to create package: {str(e)}")
                 finally:

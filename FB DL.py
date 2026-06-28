@@ -49,7 +49,7 @@ def save_config(config):
 
 tasks = {}
 
-def download_video(task_id, urls_text, browser, custom_name=None, mode="video", package_format="raw"):
+def download_video(task_id, urls_text, browser, custom_name=None, mode="video", package_format="raw", cookie_file=None):
     urls = [u.strip() for u in urls_text.split('\n') if u.strip()]
     
     def log_cb(msg):
@@ -72,13 +72,11 @@ def download_video(task_id, urls_text, browser, custom_name=None, mode="video", 
                 output_filename = f"{current_name}.pdf" if current_name else f"flipbook_{int(time.time())}.pdf"
                 if out_dir:
                     output_filename = os.path.join(out_dir, output_filename)
-                success = download_flipbook(url, output_filename, log_callback=log_cb)
+                success = download_flipbook(url, output_filename, log_callback=log_cb, cookie_file=cookie_file)
             elif mode == "image":
                 out_dir_path = out_dir if out_dir else os.getcwd()
-                # custom_cookies is handled via cookies.txt in root
-                # check if cookies.txt exists
-                has_cookies = os.path.exists("cookies.txt")
-                download_manga(url, log_cb, None, current_name, has_cookies, out_dir_path, package_format)
+                has_cookies = cookie_file is not None and os.path.exists(cookie_file)
+                download_manga(url, log_cb, None, current_name, has_cookies, out_dir_path, package_format, cookie_file=cookie_file)
                 success = True
             else:
                 audio_only = (mode == "sound")
@@ -91,7 +89,7 @@ def download_video(task_id, urls_text, browser, custom_name=None, mode="video", 
                     else:
                         final_custom_name = os.path.join(out_dir, final_custom_name)
 
-                success = download_media(url, browser=browser, custom_name=final_custom_name, audio_only=audio_only, log_callback=log_cb)
+                success = download_media(url, browser=browser, custom_name=final_custom_name, audio_only=audio_only, log_callback=log_cb, cookie_file=cookie_file)
                 
             if not success:
                 log_cb(f"[ERROR] Failed to download: {url}")
@@ -102,6 +100,12 @@ def download_video(task_id, urls_text, browser, custom_name=None, mode="video", 
             log_cb("[*] Waiting 5 seconds before next download (Anti-bot)...")
             time.sleep(5)
             
+    if cookie_file and os.path.exists(cookie_file):
+        try:
+            os.remove(cookie_file)
+        except:
+            pass
+
     log_cb("[SUCCESS] All tasks finished!")
     tasks[task_id]["status"] = "finished"
 
@@ -119,17 +123,20 @@ def api_download():
     custom_cookies = data.get("custom_cookies", "")
     package_format = data.get("package_format", "raw")
     
+    task_id = str(uuid.uuid4())
+    cookie_file = None
+
     if custom_cookies:
         try:
-            with open("cookies.txt", "w", encoding="utf-8") as f:
+            cookie_file = f"cookies_{task_id}.txt"
+            with open(cookie_file, "w", encoding="utf-8") as f:
                 f.write(custom_cookies)
         except Exception as e:
             print(f"Error writing cookies: {e}")
 
-    task_id = str(uuid.uuid4())
     tasks[task_id] = {"status": "running", "logs": []}
     
-    thread = threading.Thread(target=download_video, args=(task_id, urls_text, browser, custom_name, mode, package_format))
+    thread = threading.Thread(target=download_video, args=(task_id, urls_text, browser, custom_name, mode, package_format, cookie_file))
     thread.start()
     
     return jsonify({"status": "started", "task_id": task_id})
