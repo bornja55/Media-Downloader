@@ -128,6 +128,16 @@ Our program is available as a ready-to-use `.exe` file (One-Click) without needi
 
 ---
 
+## 📁 File Storage & Default Output
+
+By default, the downloaded files are saved in the folders located **in the same directory as the program** (unless you manually change the path in Settings):
+
+- 📁 **`media_output/`** : Used for saving downloaded **Videos, Audio, and Images (Manga)**.
+- 📁 **`rpa_output/`** : Used for saving extracted **PDFs or Book Pages** from Flipbook sites (PDF Mode).
+- 📁 **`dist/`** : (For developers running source code) This folder stores the compiled `.exe` files ready for use.
+
+---
+
 ## ⚠️ Security & Privacy (Limitations)
 
 - **100% Local Execution:** This program runs entirely on your machine. Passwords and cookies are never sent to external servers. Session cookies are read "temporarily" only when file extraction is required.
