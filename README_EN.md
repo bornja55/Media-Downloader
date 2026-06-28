@@ -130,12 +130,12 @@ Our program is available as a ready-to-use `.exe` file (One-Click) without needi
 
 ## 📁 File Storage & Default Output
 
-By default, if you do not specify a folder in Settings, **all downloaded files (Videos, Audio, Images, and PDFs)** will be saved directly into the **"current program directory"**.
-
-- 📂 **Current Directory:** Used for saving all downloaded media.
+If you **do not specify** a folder in Settings, the program will save files to the default locations below:
+- 📂 **Current Program Directory:** Used for saving **Videos, Audio, Images (Manga), and PDF mode** downloads.
+- 📁 **`rpa_output/`** : Used for saving Flipbooks extracted via the **RPA (Virtual Machine) system**.
 - 📁 **`dist/`** : (For developers) This folder stores the compiled `.exe` files ready for use.
 
-*(💡 **Tip:** If you prefer to keep downloaded files separate from the program files, open the **Settings ⚙️** menu and click 🔍 to select a dedicated folder (e.g., `C:\Downloads\Media`). The program will route all downloads there instead.)*
+*(💡 **Note:** However, if you DO configure the Output Directory in Settings (e.g., `C:\Downloads`), **all downloaded files (including RPA)** will be routed to that single specified folder instead.)*
 
 ---
 
