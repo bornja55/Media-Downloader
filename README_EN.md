@@ -148,11 +148,11 @@ If you **do not specify** a folder in Settings, the program will save files to t
 
 ---
 
-## ⚠️ Security & Privacy (Limitations)
+## ⚠️ Security & Privacy
 
-- **100% Local Execution:** This program runs entirely on your machine. Passwords and cookies are never sent to external servers. Session cookies are read "temporarily" only when file extraction is required.
-- **Headless Chrome:** The Flipbook extraction system stealthily runs Google Chrome in the background (without disrupting your screen). Please do not forcefully close the Chrome process via Task Manager while the system is running.
-- **Google Chrome Limitations (App-Bound Encryption):** Due to Google Chrome security updates, automatic cookie extraction may fail (Error #7271). If this happens, please use the **Copy Custom Cookies** method via the extension as detailed in the guide above.
+- **🔒 100% Safe (Local Execution):** This program runs entirely on your local machine. Passwords and browsing history are never sent to external servers. Any cookies you provide are used "temporarily" during the download process and are immediately destroyed once finished.
+- **👻 Invisible Browser:** In PDF (Flipbook) mode, the program may stealthily open an invisible browser in the background to avoid disrupting your screen. If you experience minor lag, don't worry—just let it finish its job.
+- **🛡️ Troubleshooting Cookie Extraction:** Sometimes, advanced security updates in your browser might prevent the program from pulling cookies automatically (showing an extraction failed error). Don't panic! Simply switch to the **Custom Cookies** method (by copying and pasting your cookies via the recommended Extension in the guide above). It's easy, stable, and guarantees a 100% success rate!
 
 ---
 
