@@ -42,8 +42,13 @@ class NativeLogger:
     def error(self, msg):
         self.callback(f"[ERROR] {msg}")
 
-def download_media(url, browser="chrome", custom_name=None, audio_only=False, log_callback=print, cookie_file=None):
+class CancelDownload(Exception):
+    pass
+
+def download_media(url, browser="chrome", custom_name=None, audio_only=False, log_callback=print, cookie_file=None, cancel_check=None):
     def progress_hook(d):
+        if cancel_check and cancel_check():
+            raise CancelDownload("Download cancelled by user.")
         if d['status'] == 'downloading':
             # Reduce spam by only logging occasionally or just let logger handle it
             pass
@@ -53,6 +58,11 @@ def download_media(url, browser="chrome", custom_name=None, audio_only=False, lo
     try:
         log_callback(f"[*] Extracting URL: {url}")
         
+        def match_filter(info_dict, incomplete):
+            if cancel_check and cancel_check():
+                return "Download cancelled by user."
+            return None
+
         ydl_opts = {
             'quiet': False,
             'no_warnings': False,
@@ -63,6 +73,7 @@ def download_media(url, browser="chrome", custom_name=None, audio_only=False, lo
             'fragment_retries': 10,
             'logger': NativeLogger(log_callback),
             'progress_hooks': [progress_hook],
+            'match_filter': match_filter,
         }
         
         if cookie_file and os.path.exists(cookie_file):
@@ -104,8 +115,14 @@ def download_media(url, browser="chrome", custom_name=None, audio_only=False, lo
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 ydl.download([url])
+        except CancelDownload:
+            log_callback("[!] Task was aborted by user.")
+            return False
         except Exception as e:
             error_str = str(e)
+            if "Download cancelled by user." in error_str:
+                log_callback("[!] Task was aborted by user.")
+                return False
             if ("Could not copy Chrome cookie database" in error_str or "Could not copy" in error_str or "database is locked" in error_str):
                 if 'cookiesfrombrowser' in ydl_opts:
                     log_callback(f"[!] Warning: Could not extract cookies from {browser} (it might be open/locked).")

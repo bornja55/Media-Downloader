@@ -12,6 +12,9 @@ import time
 import uuid
 import json
 import subprocess
+import ctypes
+import ctypes.wintypes
+import base64
 from flask import Flask, render_template, request, jsonify
 
 # Import the refactored downloader modules
@@ -31,21 +34,59 @@ else:
 CONFIG_FILE = "config.json"
 DEFAULT_CONFIG = {
     "output_dir": "",
-    "theme": "dark"
+    "theme": "dark",
+    "cookies": ""
 }
+
+class DATA_BLOB(ctypes.Structure):
+    _fields_ = [('cbData', ctypes.wintypes.DWORD), ('pbData', ctypes.POINTER(ctypes.c_char))]
+
+def encrypt_dpapi(data: str) -> str:
+    if not data: return data
+    try:
+        data_bytes = data.encode('utf-8')
+        blob_in = DATA_BLOB(len(data_bytes), ctypes.cast(ctypes.c_char_p(data_bytes), ctypes.POINTER(ctypes.c_char)))
+        blob_out = DATA_BLOB()
+        if ctypes.windll.crypt32.CryptProtectData(ctypes.byref(blob_in), None, None, None, None, 0, ctypes.byref(blob_out)):
+            encrypted = ctypes.string_at(blob_out.pbData, blob_out.cbData)
+            ctypes.windll.kernel32.LocalFree(blob_out.pbData)
+            return base64.b64encode(encrypted).decode('utf-8')
+    except Exception as e:
+        print(f"Encryption error: {e}")
+    return data
+
+def decrypt_dpapi(encrypted_b64: str) -> str:
+    if not encrypted_b64: return encrypted_b64
+    try:
+        encrypted = base64.b64decode(encrypted_b64)
+        blob_in = DATA_BLOB(len(encrypted), ctypes.cast(ctypes.c_char_p(encrypted), ctypes.POINTER(ctypes.c_char)))
+        blob_out = DATA_BLOB()
+        if ctypes.windll.crypt32.CryptUnprotectData(ctypes.byref(blob_in), None, None, None, None, 0, ctypes.byref(blob_out)):
+            decrypted = ctypes.string_at(blob_out.pbData, blob_out.cbData)
+            ctypes.windll.kernel32.LocalFree(blob_out.pbData)
+            return decrypted.decode('utf-8')
+    except Exception as e:
+        pass # Not encrypted or invalid
+    return encrypted_b64
 
 def load_config():
     if os.path.exists(CONFIG_FILE):
         try:
             with open(CONFIG_FILE, "r", encoding="utf-8") as f:
-                return {**DEFAULT_CONFIG, **json.load(f)}
+                config = {**DEFAULT_CONFIG, **json.load(f)}
+                if config.get("cookies"):
+                    config["cookies"] = decrypt_dpapi(config["cookies"])
+                return config
         except:
             pass
     return DEFAULT_CONFIG
 
 def save_config(config):
+    save_data = dict(config)
+    if save_data.get("cookies"):
+        save_data["cookies"] = encrypt_dpapi(save_data["cookies"])
     with open(CONFIG_FILE, "w", encoding="utf-8") as f:
-        json.dump(config, f, indent=4)
+        json.dump(save_data, f, indent=4)
 
 tasks = {}
 
@@ -72,6 +113,9 @@ def download_video(task_id, urls_text, browser, custom_name=None, mode="video", 
                 config = load_config()
                 out_dir = config.get("output_dir", "").strip()
                 
+                def cancel_check():
+                    return tasks.get(task_id, {}).get("cancel", False)
+
                 # Use JobFactory to create the appropriate strategy for this mode
                 job = JobFactory.create_job(
                     task_id=task_id,
@@ -81,7 +125,8 @@ def download_video(task_id, urls_text, browser, custom_name=None, mode="video", 
                     cookie_file=cookie_file,
                     log_callback=log_cb,
                     package_format=package_format,
-                    browser=browser
+                    browser=browser,
+                    cancel_check=cancel_check
                 )
                 
                 # Execute the job
@@ -144,6 +189,15 @@ def get_logs():
     task_id = request.args.get("task_id")
     task = tasks.get(task_id, {"logs": [], "status": "unknown"})
     return jsonify({"logs": task["logs"], "status": task["status"]})
+
+@app.route("/api/cancel", methods=["POST"])
+def cancel_task():
+    data = request.json
+    task_id = data.get("task_id")
+    if task_id in tasks:
+        tasks[task_id]["cancel"] = True
+        return jsonify({"status": "success", "message": "Cancel signal sent."})
+    return jsonify({"status": "error", "message": "Task not found."}), 404
 
 @app.route("/api/config", methods=["GET", "POST"])
 def handle_config():

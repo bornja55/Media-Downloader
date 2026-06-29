@@ -8,14 +8,10 @@
 
 A premium all-in-one web application (Web GUI) for downloading all types of media, including videos, audio, or access-restricted Flipbooks. Equipped with a smart system that seamlessly bypasses member-only restrictions!
 
-## 🆕 What's New in Version 6.1.1 (Hotfix)
-- **Cookie Junk Cleanup**: Fixed an issue where temporary cookie files (`cookies_*.txt`) could be left behind in the application folder if the program was unexpectedly closed.
-
-## 🆕 What's New in Version 6.1 (Bug Fixes & Stability)
-- **Automatic Image Backup**: Never lose your downloaded images again! If your PC doesn't support creating PDF files, the system will now automatically pack all your images into a comic book format (.cbz) so you always get a complete file.
-- **Seamless Multiple Downloads**: Unlock the limits! You can now queue up multiple downloads at the same time smoothly. Even if each download uses a different account or login session, the system will handle them separately without getting confused.
-- **Smarter Flipbook Reader**: Say goodbye to the app freezing when it encounters websites with background animations or flashy effects. The new scanner is smart enough to ignore those and will continue reading until the very last page without a hitch.
-- **Smart Folder Recovery**: If you accidentally type in the wrong folder name or select a drive that doesn't exist, the app won't crash or close on you. It will gracefully recover and save your files to the default backup folder instead.
+## 🆕 What's New in Version 7.0 (The Ultimate Engine Upgrade)
+- **Safe Emergency Stop:** Hit the brakes safely! If you change your mind while downloading a massive playlist (100+ videos) or running the RPA bot, you can now press the "Emergency Stop" button. The system will safely abort the task and clean up leftover files without affecting your other background programs.
+- **Military-Grade Cookie Encryption (DPAPI):** Your privacy is our top priority! Our cross-session custom cookie storage (Save Config) has been upgraded with OS-level encryption using **Windows DPAPI**. Your cookie data is securely locked to your Windows user account. If someone copies your `config.json` to another computer, it will be completely unreadable. 100% Secure!
+- **Polymorphic Architecture:** Upgraded the backend codebase with the JobFactory Pattern, making the download system more stable, allowing seamless mode switching, and paving the way for future enterprise-level features.
 
 ---
 

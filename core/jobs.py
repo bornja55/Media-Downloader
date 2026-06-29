@@ -6,12 +6,13 @@ from manga_downloader import download_manga
 from fb_downloader import download_media
 
 class DownloadJob(ABC):
-    def __init__(self, task_id, url, custom_name, cookie_file, log_callback):
+    def __init__(self, task_id, url, custom_name, cookie_file, log_callback, cancel_check=None):
         self.task_id = task_id
         self.url = url
         self.custom_name = custom_name
         self.cookie_file = cookie_file
         self.log_cb = log_callback
+        self.cancel_check = cancel_check
 
     @abstractmethod
     def execute(self, out_dir):
@@ -29,8 +30,8 @@ class FlipbookJob(DownloadJob):
         return download_flipbook(self.url, output_filename, log_callback=self.log_cb, cookie_file=self.cookie_file)
 
 class MangaChapterJob(DownloadJob):
-    def __init__(self, task_id, url, custom_name, cookie_file, log_callback, package_format):
-        super().__init__(task_id, url, custom_name, cookie_file, log_callback)
+    def __init__(self, task_id, url, custom_name, cookie_file, log_callback, package_format, cancel_check=None):
+        super().__init__(task_id, url, custom_name, cookie_file, log_callback, cancel_check)
         self.package_format = package_format
 
     def execute(self, out_dir):
@@ -48,8 +49,8 @@ class MangaChapterJob(DownloadJob):
             return False
 
 class VideoJob(DownloadJob):
-    def __init__(self, task_id, url, custom_name, cookie_file, log_callback, browser, audio_only):
-        super().__init__(task_id, url, custom_name, cookie_file, log_callback)
+    def __init__(self, task_id, url, custom_name, cookie_file, log_callback, browser, audio_only, cancel_check=None):
+        super().__init__(task_id, url, custom_name, cookie_file, log_callback, cancel_check)
         self.browser = browser
         self.audio_only = audio_only
 
@@ -64,15 +65,15 @@ class VideoJob(DownloadJob):
             else:
                 final_custom_name = os.path.join(out_dir, final_custom_name)
 
-        return download_media(self.url, browser=self.browser, custom_name=final_custom_name, audio_only=self.audio_only, log_callback=self.log_cb, cookie_file=self.cookie_file)
+        return download_media(self.url, browser=self.browser, custom_name=final_custom_name, audio_only=self.audio_only, log_callback=self.log_cb, cookie_file=self.cookie_file, cancel_check=self.cancel_check)
 
 class JobFactory:
     @staticmethod
-    def create_job(task_id, url, mode, custom_name, cookie_file, log_callback, package_format="raw", browser="chrome"):
+    def create_job(task_id, url, mode, custom_name, cookie_file, log_callback, package_format="raw", browser="chrome", cancel_check=None):
         if mode == "pdf":
-            return FlipbookJob(task_id, url, custom_name, cookie_file, log_callback)
+            return FlipbookJob(task_id, url, custom_name, cookie_file, log_callback, cancel_check)
         elif mode == "image":
-            return MangaChapterJob(task_id, url, custom_name, cookie_file, log_callback, package_format)
+            return MangaChapterJob(task_id, url, custom_name, cookie_file, log_callback, package_format, cancel_check)
         else:
             audio_only = (mode == "sound")
-            return VideoJob(task_id, url, custom_name, cookie_file, log_callback, browser, audio_only)
+            return VideoJob(task_id, url, custom_name, cookie_file, log_callback, browser, audio_only, cancel_check)

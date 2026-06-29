@@ -348,6 +348,9 @@ https://source.net/media/abc"></textarea>
 <span class="material-symbols-outlined text-primary text-[20px]" data-icon="history">history</span>
                     System Status Log
                 </h3>
+                <button id="btnEmergencyStop" class="hidden bg-error/10 hover:bg-error/20 text-error px-4 py-1.5 rounded-lg font-bold text-label-sm flex items-center gap-2 active:scale-95 transition-all border border-error/20">
+                    <span class="material-symbols-outlined text-[18px]">stop_circle</span> Emergency Stop
+                </button>
 <div class="flex gap-4">
 <span class="flex items-center gap-1.5 text-label-sm text-on-surface-variant">
 <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
@@ -558,8 +561,24 @@ https://source.net/media/abc"></textarea>
         const customNameInput = document.querySelector('input[placeholder*="media_export"]');
         const customCookiesInput = document.getElementById('customCookies');
         const packageFormatInput = document.getElementById('packageFormat');
+        const btnEmergencyStop = document.getElementById('btnEmergencyStop');
         let logInterval = null;
         let logCount = 0;
+        let currentTaskId = null;
+
+        btnEmergencyStop.addEventListener('click', () => {
+            if (currentTaskId) {
+                btnEmergencyStop.disabled = true;
+                btnEmergencyStop.innerHTML = `<span class="material-symbols-outlined animate-spin text-[18px]">progress_activity</span> Stopping...`;
+                fetch('/api/cancel', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ task_id: currentTaskId })
+                }).then(() => {
+                    addLog("[!] Sent Emergency Stop signal. Waiting for task to abort...", "error");
+                });
+            }
+        });
 
         function addLog(message, type = 'default') {
             const entry = document.createElement('div');
@@ -609,10 +628,16 @@ https://source.net/media/abc"></textarea>
             }).then(r => r.json())
               .then(data => {
                 const taskId = data.task_id;
+                currentTaskId = taskId;
                 logCount = 0;
                 logContainer.innerHTML = '';
                 addLog(`[System] Started batch download task in ${currentMode.toUpperCase()} mode...`, "success");
                 
+                // Reset and show emergency stop button
+                btnEmergencyStop.disabled = false;
+                btnEmergencyStop.innerHTML = `<span class="material-symbols-outlined text-[18px]">stop_circle</span> Emergency Stop`;
+                btnEmergencyStop.classList.remove('hidden');
+
                 let currentProcessingFile = "";
                 
                 if (logInterval) clearInterval(logInterval);
@@ -709,6 +734,8 @@ https://source.net/media/abc"></textarea>
                             clearInterval(logInterval);
                             downloadBtn.disabled = false;
                             downloadBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                            btnEmergencyStop.classList.add('hidden');
+                            currentTaskId = null;
                         }
                         logCount = logs.length;
                     });
@@ -738,6 +765,7 @@ https://source.net/media/abc"></textarea>
             .then(r => r.json())
             .then(data => {
                 if (data.output_dir) outputDirInput.value = data.output_dir;
+                if (data.cookies) customCookiesInput.value = data.cookies;
                 if (data.theme === 'light') {
                     document.documentElement.classList.remove('dark');
                     themeIcon.innerText = 'light_mode';
@@ -749,6 +777,7 @@ https://source.net/media/abc"></textarea>
         const saveConfig = () => {
             const config = {
                 output_dir: outputDirInput.value.trim(),
+                cookies: customCookiesInput.value.trim(),
                 theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
             };
             fetch('/api/config', {
@@ -770,6 +799,7 @@ https://source.net/media/abc"></textarea>
         });
 
         outputDirInput.addEventListener('change', saveConfig);
+        customCookiesInput.addEventListener('change', saveConfig);
 
         browseFolderBtn.addEventListener('click', () => {
             fetch('/api/browse-folder')
@@ -795,6 +825,8 @@ https://source.net/media/abc"></textarea>
 
         function clearCookies() {
             if(!confirm("Are you sure you want to delete stored custom cookies?")) return;
+            customCookiesInput.value = '';
+            saveConfig();
             fetch('/api/clear-cookies', { method: 'POST' })
             .then(r => r.json())
             .then(data => {
@@ -1000,10 +1032,16 @@ https://source.net/media/abc"></textarea>
                 body: JSON.stringify(config)
             }).then(r => r.json()).then(data => {
                 const taskId = data.task_id;
+                currentTaskId = taskId;
                 logCount = 0;
                 logContainer.innerHTML = '';
                 addLog('[System] Starting Universal RPA Macro...', 'success');
                 
+                // Reset and show emergency stop button
+                btnEmergencyStop.disabled = false;
+                btnEmergencyStop.innerHTML = `<span class="material-symbols-outlined text-[18px]">stop_circle</span> Emergency Stop`;
+                btnEmergencyStop.classList.remove('hidden');
+
                 if (logInterval) clearInterval(logInterval);
                 logInterval = setInterval(() => {
                     fetch(`/api/logs?task_id=${taskId}`)
@@ -1040,6 +1078,8 @@ https://source.net/media/abc"></textarea>
                             clearInterval(logInterval);
                             btnStartRpa.disabled = false;
                             btnStartRpa.classList.remove('opacity-50');
+                            btnEmergencyStop.classList.add('hidden');
+                            currentTaskId = null;
                             addLog('[System] RPA Task Finished.', 'success');
                         }
                         logCount = logs.length;
